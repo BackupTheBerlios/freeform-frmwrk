@@ -1,0 +1,83 @@
+<b>The main features of the HTML Document API are:</b>
+
+<ul>
+<li>
+Single API for producing different responce documents for web browsers,
+PDA/Cellphone devices or XML network applications
+</li>
+
+<li>
+Extensible tag architecture that allows rendering of complex views on resulting
+pages like repeated content, conditional display, result set pagination etc.
+</li>
+
+<li>
+You can create your own tag classes that can render even more complicated 
+content like data grids, layered menus, trees etc.
+</li>
+
+<li>
+The HTML package is Unicode-only so you are ready for developing internationalised
+sites with it. You just have to create templates in the UTF-8 encoding if you
+use non-English languages for static text
+</li>
+
+<li>
+It provides simplified link generation so that designers do not have to
+bother about long and mouthful URLs. All they need to know is the "key",
+or template variable name, that keeps the location of the page the link
+takes to, while the programmers decide which parameters are passed to that
+pages.
+</li>
+
+<li>
+Simplified form display: like saving designers time to create hyperlinks,
+forms are displayed in a straightforward manner too. There is just one tag
+for designers to know (HTMLInput) and a single attribute (name). The rest
+(like deciding what input field this is, default value or options list) is
+done by the HTML Document API. In particular this saves designers from 
+creating select lists when they have to type every option value and label - 
+these data are taken from the input field objects prepared by programmers
+according to business logic of the application
+</li>
+
+<li>
+HTMLDocuments can be nested: you can reuse HTML snippets in multiple templates
+with the HTMLIncludeFile tag
+</li>
+
+<li>
+HTMLDocuments support nested template variables to simplify transfer of
+data from business to presentation logic.
+</li>
+
+<li>
+Starting from 1.1.0.Stable the HTML Document API supports concept of 
+template regions - pieces of template that can be shown in multiple
+places, even included files. This feature allows you to further cut the
+size of the template files, as well as to speed up parsing considerably
+</li>
+
+<li>
+HTMLDocument and its subclasses are designed to deliver cacheable and
+gzipped content to boost online performance of your application. These
+aspects can be tuned from within the application by just a few calls, while the 
+gzipping of output is automatically available for every client that supports it
+(all major browsers do by default). 
+Documents produced by this package are well suited for keep-alive
+connections and support the HTTP/1.1 caching mechanisms
+</li>
+
+<li>
+The default distribution contains over 10 ready-to-use tag implementations to
+display conditional content, iterated content, paginators, links, forms and fields,
+formatted date and time and images produced by other actions.
+</li>
+
+<li>
+Starting with version 1.2.0, this package supports template caching to increase the speed
+of template generation. The cache is fully automatic; you only have to enable it in the
+package configuration file. It will store parsed templates and update the cache
+as you modify the template files. While this consumes some extra disk space, the speed
+increase is up to 100 times in some situations.
+</ul>

@@ -1,0 +1,69 @@
+<html>
+<head>
+  <!-- See how we add the page title here - the 'title' template variable gets prepared
+       by every demo -->
+  <title>Freeform Demos - {%title}</title>
+</head>
+
+<style>
+body {
+  font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
+  font-size: 9pt;
+}
+code {
+  font-size: 9pt;
+}
+td {
+  vertical-align: top;
+}
+input, select, option {
+  font-size: 10px;
+  font-family: Tahoma, Verdana, Arial, snas-serif;
+</style>
+
+<body>
+  <!-- This table forms the header of every page produced by the demos -->
+  <table width="100%">
+  <tr>
+    <td width="60%" align="left">
+      <!-- This is the header that holds the logo and the app title -->
+      <HTMLLink action="WelcomeToFreeform"><HTMLImage package="freeform" name="logo.gif" border="0px" /></HTMLLink>
+    </td>
+    <td align="right">
+      <!-- Here we display the view source/view template links at the top right.
+           Note they will not be shown when inside of those actions --> 
+      <HTMLLink key="viewSource">View Source</HTMLLink> <HTMLLink key="viewTemplate">View Template</HTMLLink>
+       <!-- This tag will show the quick jump form -->
+      <HTMLShowForm key="routerForm">
+        <HTMLInput name="demos" onchange="JavaScript: this.form.submit()" /><input type="submit" value=" Go "/>
+      </HTMLShowForm>
+    </td>
+    <HTMLIfSet key="freddy">
+      <td width="130px" align="right">
+        <HTMLLink action="Freddy"><HTMLImage name="link-freddy.gif" package="freeform" border="0px" /></HTMLLink>
+      </td>
+    </HTMLIfSet>
+  </tr>
+  </table>
+  
+  <!-- Here we include the 'main' pane of the page - every demo has its own embeddable
+       subtemplate that is placed here -->
+  <hr/>
+  <HTMLIncludeFile name="%main"/>
+  <hr/>
+  
+  <!-- This table forms the footer of every page produced by the demos -->
+  <table width="100%">
+  <tr>
+    <td width="50%" align="left">
+      <!-- The previous demo if any -->
+      <HTMLLink key="prev">&amp;lt;&amp;lt; Previous Demo: {%prevTitle}</HTMLLink>
+    </td>
+    <td width="50%" align="right">
+      <!-- The next demo if any -->
+      <HTMLLink key="next">Next Demo: {%nextTitle} &amp;gt;&amp;gt;</HTMLLink>
+    </td>
+  </tr>
+  </table>
+</body>
+</html>

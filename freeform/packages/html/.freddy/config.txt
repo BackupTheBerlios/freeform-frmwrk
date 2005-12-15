@@ -1,0 +1,16 @@
+<b>Configuring the htmp package</b>
+
+<b>Parser Cache</b><br/>
+To enable the cache, edit the .config file and enable the <tt>cache.parserCache</tt> by
+setting it to 1. Also edit the <tt>cache.parserCachePath</tt> to point to a writable
+directory where the cached templates will be stored. The directory must exist before 
+you enable caching. Please give the absolute path; otherwise, the path will be calculated
+relative to the directory where the index.php5 file is located (The Freeform front controller).
+
+<b>DOCTYPE Generation</b><br/>
+The documents produced by the <class>HTMLDocument</class> will contain the DOCTYPE
+declaration. You can configure the version and the type by setting the <tt>html.version</tt>
+and the <tt>html.type</tt> directives. The version can be one of these: 4.0 or 4.01 and the
+type can be set to either strict or transitional. Note that this does not influence
+the parsing and producing the documents; it is only used to force certain browsers to
+use standarts-compliant rendering.

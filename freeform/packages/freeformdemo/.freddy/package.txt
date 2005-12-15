@@ -1,0 +1,4 @@
+/**
+This package contains a set of demo actions that will present some commonest features
+of the Freeform Framework
+ */

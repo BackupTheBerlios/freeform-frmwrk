@@ -1,0 +1,15 @@
+/**
+ * This is the core package for the <doc file="freeform.txt">Freeform 
+ * Framework</doc>. It contains declarations for the base classes and interfaces
+ * you will use while developing your own web applications.
+ * @author Dennis Popel
+ * @see <doc file="freeform.txt">Freeform Framework overview, features and architecture</doc>
+ * @see <doc file="application.txt">Freeform Application Architecture</doc>
+ * @see <doc file="installation.txt">Installing Freeform</doc>
+ * @see <doc file="forms-using.txt">Using Forms</doc>
+ * @see <doc file="security-using.txt">Using Security</doc>
+ * @see <doc file="caching.txt">Caching</doc>
+ * @see <doc file="locationRewriter.txt" package="freeform">Location rewriting</doc>
+ * @see <doc file="creatingPackages.txt" package="freeform">Creating your own packages</doc>
+ * @see also try <a href="http://www.google.com/search?q=%22freeform+framework%22">google</a> for "freeform framework"
+ */

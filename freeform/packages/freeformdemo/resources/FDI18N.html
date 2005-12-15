@@ -1,0 +1,165 @@
+<html>
+<body>
+  <h2>Internationalization Demo</h2>
+  Since version 1.2.0 Freeform framework supports internationalization and localization 
+  in a really platform-independent way. It offers you powerful and at the same time simple tools
+  to easily make your web application multilingual. <br/><br/>
+  
+  <HTMLIfSet key="notAvailable">
+  <div style="width: 100%; border-color: Crimson; border-style: solid; background-color: WhiteSmoke; text-align: center">
+  <b>Sorry, the I18N Demo is unavailable; the i18n package has been misconfigured</b>
+  </div>
+  </HTMLIfSet>
+  
+  <HTMLIfNotSet key="notAvailable">
+  Please use the form below to select your country, language, case sensitivity for sorting
+  and a time zone. You will notice how the various details change in the table under the form.
+  <br/><br/>
+  
+  <div style="width: 100%; border-color: Silver; border-style: solid; background-color: WhiteSmoke; text-align: center">
+    <HTMLShowForm key="form" style="text-align: center">
+    <table style="text-align: left; width: 100%">
+    <tr>
+      <td style="text-align: right">Country:</td>
+      <td><HTMLInput name="country"/></td>
+    </tr><tr>
+      <td style="text-align: right">Language (dialect) / collation:</td>
+      <td>
+        <HTMLInput name="dialect"/><br/>
+        <HTMLInput name="caseSensitive"/>Case Sensitive collation<br/>
+      </td>
+    </tr><tr>
+      <td style="text-align: right">Time Zone:</td>
+      <td><HTMLInput name="tz" /></td>
+    </tr><tr>
+      <td> </td>
+      <td><input type="submit" value=" Go " /></td>
+    </tr>
+    </table>
+    </HTMLShowForm>
+  </div>
+  
+  <!-- This is the main content table -->
+  <table cellspacing="0" cellpadding="0" style="width: 100%">
+  <tr>
+    <td style="width: 50%; vertical-align: top">
+      <!-- Start left sub table -->
+      <table cellspacing="0" cellpadding="2">
+      <tr>
+        <td colspan="2" align="left">
+          <b>Current Locale Data</b>
+        </td>
+      </tr><tr>
+        <td>Country Code:</td>
+        <td>{%cc}</td>
+      </tr><tr>
+        <td>Country Name:</td>
+        <td>{%cn}</td>
+      </tr><tr>
+        <td>Country Dial Code:</td>
+        <td>+{%cdc}</td>
+      </tr><tr>
+        <td>Currency Code:</td>
+        <td>{%ccc}</td>
+      </tr><tr>
+        <td>Currency Symbol:</td>
+        <td>{%ccs}</td>
+      </tr><tr>
+        <td>Language Code:</td>
+        <td>{%lc}</td>
+      </tr><tr>
+        <td>Dialect Code:</td>
+        <td>{%dc}</td>
+      </tr><tr>
+        <td>Dialect Name:</td>
+        <td>{%dn}</td>
+      </tr><tr>
+        <td>Collation Code:</td>
+        <td>{%collc}</td>
+      </tr><tr>
+        <td>Collation Name:</td>
+        <td>{%colln}</td>
+      </tr><tr>
+        <td>Time Zone:</td>
+        <td>{%tzl}</td>
+      </tr><tr>
+        <td>Time Zone GMT Offset:</td>
+        <td>{%tzo}</td>
+      </tr><tr>
+        <td>Time Zone Abbreviation:</td>
+        <td>{%tza}</td>
+      </tr><tr>
+        <td>Time Zone Current Offset:</td>
+        <td>{%tzco}</td>
+      </tr><tr>
+        <td>Time Zone Current Abbreviation:</td>
+        <td>{%tzca}</td>
+      </tr><tr>
+        <td>Time Zone In Summer Time Now:</td>
+        <td>{%tzs}</td>
+      </tr><tr>
+        <td>Time Zone Uses Daylight Savings Time Transitions:</td>
+        <td>{%tzt}</td>
+      </tr>    
+      </table>
+    </td>
+    <td style="width: 50%; vertical-align: top">
+      <!-- Start right sub table -->    
+      <table>
+      <tr>
+        <td colspan="2" align="left">
+          <b>Localization examples</b>
+        </td>
+      </tr><tr>
+        <td>Default Date/Time Format:</td>
+        <td><HTMLDateTime/></td>
+      </tr><tr>
+        <td>SHORT Time Format:</td>
+        <td><HTMLDateTime format="short" mode="time"/></td>
+      </tr><tr>
+        <td>LONG Time Format:</td>
+        <td><HTMLDateTime format="long" mode="time"/></td>
+      </tr><tr>
+        <td>FULL Time Format:</td>
+        <td><HTMLDateTime format="full" mode="time"/></td>
+      </tr><tr>
+        <td>SHORT Date Format:</td>
+        <td><HTMLDateTime format="short" mode="date"/></td>
+      </tr><tr>
+        <td>LONG Date Format:</td>
+        <td><HTMLDateTime format="long" mode="date"/></td>
+      </tr><tr>
+        <td>FULL Date Format:</td>
+        <td><HTMLDateTime format="full" mode="date"/></td>
+      </tr><tr>
+        <td>Default Number Format:</td>
+        <td><HTMLNumberFormat value="123456789.123456789"/></td>
+      </tr><tr>
+        <td>Default Money Format:</td>
+        <td><HTMLNumberFormat value="123456789.123456789" mode="price"/></td>
+      </tr><tr>
+        <td>Collation example:</td>
+        <td>
+          Original string: <i>{@words}</i><br/>
+          Collated string: <i>{%coll}</i>
+        </td>
+      </tr><tr>
+        <td>Localized message in the template:</td>
+        <td>
+          <code>@hello=</code>{@hello}<br/>
+          <code>@bye=</code>{@bye}<br/>
+        </td>
+      </tr><tr>
+        <td>Localizable tag attributes:</td>
+        <td>
+          <input type="button" value="@hello"/><br/>
+          <div title="Localized tooltip: {@bye}">Hover your mouse over this sentence</div>
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+  </table>  
+  </HTMLIfNotSet>
+</body>
+</html>

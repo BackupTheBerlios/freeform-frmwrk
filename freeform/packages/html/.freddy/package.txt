@@ -1,0 +1,15 @@
+/**
+The HTML package is the <class>Document</class> interface implementation and allows you
+to generate responce documents from template files. It supports custom tags to render
+complex, iterable and conditional content, multiple client types, gzipping of documents
+and server-side caching of templates.
+
+
+@author Dennis Popel
+@see <doc file="features.txt">Features</doc>
+@see <doc file="usage.txt">Using the Package</doc>
+@see <doc file="template.txt">Template Basics</doc>
+@see <doc file="customtags.txt">Using Tags in the Templates</doc>
+@see <doc file="tags.txt">Bundled Custom Tags Overview</doc>
+@see <doc file="config.txt">Configuring the Package</doc>
+*/

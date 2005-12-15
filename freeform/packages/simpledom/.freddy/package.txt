@@ -1,0 +1,10 @@
+/**
+This package consists of classes that constitute the SimpleDOM API. It
+allows you to parse well-formed XML documents to produce DOM-like trees
+that consist of elements, text nodes and processing instructions.
+You can also create custom parsers to create element trees where elements
+are represented by objects of different classes to provide some additional
+functionality on the parsed data.
+@author Dennis Popel
+@since Freeform Framework 1.1.0 Beta
+*/

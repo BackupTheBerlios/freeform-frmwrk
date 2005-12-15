@@ -1,0 +1,57 @@
+<b>Installing Freeform Framework</b>
+
+<b>Requirements</b><br/>
+Freeform framework requires PHP version 5.0.4 or above. Also the extensions <tt>mbstring</tt>, 
+<tt>xml</tt>, <tt>zlib</tt> and <tt>spl</tt> must be enabled. 
+
+<b>Installation</b><br/>
+The installation is easy:
+<ol>
+<li>Choose a readable by the PHP folder and extract all the contents of the
+   distributive there (except for index.php5).</li> 
+<li>Place the index.php5 file into your web server document root directory</li>
+<li>Open the index.php5 file you just extracted in a text editor and edit line 10 to point
+   to the Freeform home directory from step 1.</li>
+<li>Configure you server to launch index.php5 when a request is made. Consult your web server
+   manual on how to do this. Note that you can safely rename index.php5 to index.php or whatever
+   name you choose as long as it will be associated with PHP.</li>
+</ol>
+
+<b>Example installation under Apache/Windows:</b><br />
+(Suppose we will install Freeform into the c:\freeform\ folder)
+<ol>
+<li>Create the c:\freeform\ folder</li>
+<li>Extract the contents of the archive containing the Freeform distribution to c:\freeform\</li>
+<li>Assuming your Apache is configured to serve documents from c:\Apache\htdocs folder, copy
+   the index.php5 there.</li>
+<li>Open the c:\Apache\htdocs\index.php5 and edit line 10 to read 
+   $FREEFORM_HOME = 'c:/freeform/'</li>
+<li>Open your browser and type http://localhost/index.php5 into the address bar. The Freeform Framework 
+   welcome screen should appear.</li>
+</ol>
+
+<b>Configuring Freeform Framework</b><br/>
+All configuration information is kept in the <tt>.config</tt> files in the packages directories.
+To configure the most global settings, you have to configure the <package>freeform</package> package.
+The most important settings are:
+<ol>
+  <li>
+    <tt>action.default</tt> - this is the class name of the default action that will be invoked
+    when you access your site (you can parallel this with the <tt>DirectoryIndex</tt> directive
+    of Apache web server)
+  </li><li>
+    <tt>action.error</tt> - this is the class name of the action that will be invoked if an access
+    to non-existent or abstract action is made (<b>note</b> this is not the action that will be invoked
+    if a fatal error/uncaught exception or security violation occures. It will just trap the
+    case when a request for non-existing action is made)
+  </li><li>
+    <tt>cache.*</tt> - please refer to <doc file="caching.txt">explanation of caching</doc> to
+    learn how to configure it
+  </li><li>
+    <tt>locationRewriter</tt> - please refer to <doc file="locationRewriter.txt">location rewriting</doc>
+    to learn how to use and enable this feature
+  </li>
+</ol>
+
+Beside these options, if you want to use the I18N API (package <package>i18n</package>), you will
+also have to configure it, as well as to install an API provider (such as <a href="http://dev6.php5.nedlinux.com:80/?action=ViewProject&amp;project=59672">Free18N</a>) 

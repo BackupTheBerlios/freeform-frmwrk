@@ -1,0 +1,35 @@
+  <b>Sessions and Security</b>
+
+  Freeform Framework also offers one way of accessing session variables. There can be many session
+  handlers (systems to actually keep session data), but there is single way of accessing cross-request
+  data. 
+
+  Upon each request all sesison variables are accessible through the calls to static methods of the 
+  Session class. In fact, there are two main methods, the getVariable() and setVariable(), used to
+  manage session variables. These calls are routed to actual sassion handler implementation that
+  may store data in files, database or somewhere else. By default, sessions will be PHP-based 
+  sessions, however, you may install any session handler that will suit your needs.
+
+  In addition to that, Freeform Framework offers a simple way of managing users. While all
+  logging/registering is left to the programmer's choice, it is recommended that all user classes
+  implement the User interface. You can develop your own system
+  of user tracking, but conforming to the User interface will make this system compatible with
+  third-party packages that may want to inspect user roles when granting access to some their
+  Actions. 
+
+  However, this is not an ultimate requirement. Freeform Framework offers an extensible and scalable
+  security API that overcomes some limitations of user handling by sessions - if your application 
+  does not use object-oriented features much, you can avoid designing an User implementation.
+
+  Freeform Framework was built with the security in mind. In fact, each action before execution is
+  checked for access. The central interface in the security API is the <class>AccessController</class> interface.
+  Classes that implement this interface can employ sophisticated security tests based on current
+  user, the resource to be accessed, request parameters, client location etc. Using OOP here allows
+  you to develop flexible security policies that can be shared by multiple actions. Third-party packages
+  can be configured to use AccessControllers from your application so that you have unified user 
+  and priviledge system over your entire web site. 
+
+  The only method defined in the AccessController interface is isAccessible(). It must return true 
+  if the current environment (logged user, request parameters etc) conform to given security policy,
+  otherwise it must return false. If a request for given Action with given parameters violates 
+  security, the Action will never get processed, and the <method>Action::onAccessDenied()</method> method will be called.

@@ -1,0 +1,35 @@
+<b>Creating your own packages</b><br />
+Since the Freeform Framework relies on packages and automatically loads classes from them 
+(yes, forget the nasty includes!), there are several conventions:
+<ol>
+<li>All PHP classes are kept in separate files named exactly as the classes with the '.php5'
+extension. Note that case also matters!</li>
+<li>All packages are kept in the 'packages' folder of Freeform home folder.</li>
+<li>The Freeform home folder may not be accessible for users via web (i.e, it can lie outside
+the web document root directory).</li>
+<li>The loader file (index.php5) must reside in the web server document root.</li>
+</ol>
+You create packages by creating directories under the 'packages' directory
+under the Freeform home directory. You place class files that belong to the
+package into that directory, together with the '.config' and '.spi' files.
+The resources are placed into the 'resources' directory of each package. For 
+example, if you want to create the 'mypackage' package, the directory tree
+will look like:
+
+<pre>
+c:/
+  |-freeform/
+    |-packages/
+    | |-freeform/
+    | |-html/
+    | |-mypackage/
+    | | |-resources/
+    | | | |-MyAction.html
+    | | |-MyAction.php5
+    |-rtl.php5
+</pre>
+
+(other packages directories are collapsed or omitted). Package resources can be 
+split into subdirectories under the 'resources' directory. To access
+them simply add the subdirectory name before the resource file name in a call to 
+<method>Package::getResourcePath</method>() method.

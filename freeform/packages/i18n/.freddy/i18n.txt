@@ -1,0 +1,139 @@
+<b>Overview</b>
+
+This is obvious that PHP is by far the most popular web scripting language 
+on the planet. It is more and more widely used in enterprise-level web applications 
+and in high-traffic content sites. Also today’s web demands localized sites and web 
+applications that can be customized to the preferences of visitors from multiple 
+countries all over the world. And it is not a secret that PHP has virtually no support 
+for building localizable applications. Here are some points to back this argument: 
+
+<ol>
+<li>setLocale() is not cross-platform as it relies on the underlying operating system 
+locale names and installed locales. Thus, migrating between Windows and Unix, your scripts 
+do not work anymore since these systems use quite different locale namings</li>
+<li>you cannot rely that a particular locale has been installed on your next server</li>
+<li>money, number and especially date formats are different for the same locale 
+on different systems</li>
+<li>versions of PHP before 5.1 offer no portable way to handle time zones</li>
+<li>there is no reliable support for locale-aware string collation (due to points 1 and 2); 
+there is no support for multiple collations in a single language</li>
+</ol>
+
+There are extensions (e.g., gettext) that allow translation of strings, but they tie 
+to a particular architecture and are unflexible enough to suit all needs.
+Every developer that wants to create a portable localizable application in PHP inevitably 
+has to face these problems. However, they are not so easy to overcome. 
+Freeform framework I18N API is a well-designed effort to minimize the pain of 
+creating i18n-capable web applications. These are the most important features:
+
+<ol>
+<li>the core i18n package defines the API only while all the functionality is provided 
+by other packages that implement this API. Such architecture allows to create different 
+i18n providers that utilize advantages of different operating systems, libraries and 
+tools. The reference implementation, Free18n, is a pure-PHP package and runs on any system that runs 
+PHP. You can use this package or design your own for better performance/reuse of 
+existing code</li>
+<li>the API introduces such concepts as country, language, language dialect, collation 
+and a locale. In Freeform, a locale is a combination of a country and a dialect; 
+they are designed in such a way that allow combining any pair of country and dialect 
+to form any possible locale. Please note how this differs from traditional locale 
+handling: you can only choose a locale that has been defined (i.e., you cannot have 
+a uk_ES locale unless such a definition existed). Moreover, you can override default 
+locale behaviour for a particular combination of country and dialect (for example, 
+Canadian Ukrainians in Canada can enjoy money format where the <i>CAD</i> currency code is 
+replaced with <i>дол.</i> translation). Combining countries and dialects into a locale 
+also allows dialect speakers to enjoy their preferred time/date and number formats 
+regardless of the country they are in: for example, a French can always enjoy the 
+familiar 11h23 time format regardless of the country he is in</li>
+<li>this API is the first one to conceptualize such entities as a dialect and a collation. 
+Differentiating them allows to create highly localizable applications that account for 
+diverse ethnic groups</li>
+<li>message translation is a commonly used feature in i18n-enabled applications. 
+The API offers an elegant interface, <class>I18NMessageDictionary</class> that can be 
+implemented to provide access to localized messages repository. The 
+<class>I18NMessageFile</class> is an impelmentation of this interface and provides 
+an easy way to store localized messages in an ini-like file</li>
+<li>time zone handling is another important feature of i18n API. It offers a simple 
+way of converting times between GMT and local</li>
+<li>the <package>free18n</package> package, a reference i18n provider, is easily extendable to add support 
+for new countries, languages and dialects. It consists of classes that represent different countries, 
+languages, dialects and collations that can be extended and reused</li>
+</ol>
+
+<b>Architecture</b>
+
+The core i18n API consists of a several interfaces; these are then implemented by concrete providers (such as the <package>free18n</package> package). 
+This is a quick look at them:
+<ol>
+<li><class>I18NCountry</class> - this interface represents a single country. It incapsulates such properties as the country code, country name, currency symbol and code, as well as the preferred time zone and dialect</li>
+<li><class>I18NLanguage</class> - this interface represents a single language. Every language can have a number of dialects, and there always is the Official dialect. A language has such properties as code, name, and a list of dialects</li>
+<li><class>I18NDialect</class> - this interface represents a dialect of a language, for example, American English. It provides methods for formatting numbers, money and time/date, as well as the list of collations for this language (there always is the Default collation for every dialect)</li>
+<li><class>I18NCollation</class> is responsible for comparing strings in a given language and converting them to upper and lower case</li>
+<li><class>I18NLocale</class> is the main class you use to format locale-specific information for a given combination of a country and a dialect. This approach allows visitors to select their country and language independently; for example, a German while on his travel to US may temporarily select USA in his profile while retain the German language; so doing the dates for example  will be presented in German format while country-specific information (e.g., currency symbol and code) will be taken from the USA data. Moreover, <class>I18NLocale</class> class can be extended to reload locale data for a given combination of a country and a dialect. By default, it will reroute its method calls to the corresponding methods of underlying Country and Dialect objects. You can set a Locale to be in specific time zone and assign it a message dictionary to get translated strings.</li>
+</ol>
+
+<b>Namings</b>
+
+Each entity of the I18N API (like language, country, dialect, collation or time zone) are 
+accessed by their system codes. These system codes reflect the two-letter country codes 
+(like US, CA, UA), the two-letter language codes (as en, de, fr), dialect codes (specific to
+language and implementation, there always is the Official dialect), collation codes (specific
+to a dialect and implementation, there always is the Default collation). The <method>I18N::getDialects</method>() 
+returns the codes of all installed dialects in the form <tt>lc_dc</tt> (language code, underscore, dialect code,
+e.g. <tt>en_Official</tt>). 
+
+Time zone codes are specific to each implementation, and the API does not make any assumptions on these.
+
+Each language has the default dialect with the code <tt>Official</tt>. This default dialect
+always has the default collation with the code <tt>Default</tt>. Implementations are 
+required to follow this convention. The implementations are also required to return
+instances of <class>I18NLocale</class> objects for any combination of country, language and
+dialect codes, provided they are installed and the language-dialect pairs exist.
+
+<b>Integration with the <package>html</package> package</b>
+
+The <package>html</package> core package can fully utilize the advantages of the i18n API.
+Its templating system can automatically format dates and times, money and numeric
+values, as well as automatically translate messages embedded into the templates. Please
+refer to that package documentation for details.
+
+<b>Installation</b>
+
+The <package>i18n</package> is bundled with the default distribution of the Freeform 
+framework. However, to use it, you will need a specific provider (API implementation),
+such as the <package>free18n</package> (it must be downloaded and installed separately). 
+To configure <package>i18n</package> to use certain implementation, you will have to
+modify the package config file (located at {FREEFORM_HOME}/packages/i18n directory) and
+edit the <tt>provider</tt> option:
+<pre>
+  provider=Free18N
+</pre>
+(the example assumes you use free18n).
+
+Another configuration option is the <tt>defaultCountry</tt> that specifies the country that will
+be used to set the locale to if a call to <class>I18N::getLocale</class>() is made without
+parameters. The language and dialect will be set to that country's defaults. 
+
+<b>Example Usage</b>
+
+<source>
+  ...
+  $l = I18N::getLocale('US'); 
+  // This will return the locale with the country set to US, 
+  // language set to en, dialect set to American, and time zone will be EST
+  $l->formatCurrency(1999.55); 
+  // This will return USD1,999.55
+  
+  $l = I18N::getLocale('GB', 'uk'); 
+  // This will return the locale with the country set to GB, 
+  // language set to uk and the dialect set to Official. Time zone will be WET
+  $l->formatCurrency(1999.55); 
+  // This will requrn 1 999,55 £
+  $l->formatDateTime(time()); 
+  // This will return нд, 31 лип 2005, 12:16
+  ...
+</source>
+
+Please refer to the <package>i18n</package> package interfaces and classes for more detailed 
+information on the i18n API. Also please take a look at the <class>FDI18N</class> for
+an example of using more features of the i18n API.

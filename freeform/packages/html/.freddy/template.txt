@@ -1,0 +1,340 @@
+<b>Template Basics</b>
+
+The HTML package implements a templating engine. It means that it processes a template file to
+build the resulting responce document. The template file contains references to template variables 
+as well as regular and special tags. The template parser processes the templates, replaces variable
+references with their values and executes special tags.
+
+Every template must be a well-formed XML file. The HTML package is UTF-8 based only, so you may
+include non-English letters in the template files, but they must be saved in the UTF-8 encoding.
+Note that since the HTML package uses XML parsers to process the templates, all tags' case must
+be preserved!
+
+Below is an example of a template:
+
+<pre>
+  &amp;lt;?xml version="1.0" encoding="UTF-8"?>
+  &amp;lt;html>
+    &amp;lt;head>
+      &amp;lt;title>Hello, World!&amp;lt;/title>
+    &amp;lt;/head>
+    &amp;lt;body>
+      &amp;lt;h2>Hello, World!&amp;lt;/h2>
+    &amp;lt;/body>
+  &amp;lt;/html>
+</pre>
+
+As you can see, it's an ordinary XML file with the <tt>html</tt> root element. The body is a simple
+HTML file that would display the string "Hello, World!" in big bold letters. As this may seem simple,
+the templating in HTML help you develop very complex documents that are separated from the application
+code. The first step to this is the concept of template variables. A template variable is a key-value
+pair that gets preset by the application by calling the <method>HTMLDocument::setVariable</method> 
+method. It takes two parameters: first is the name of the template variable (the key) and the second
+is the actual value of the variable. Let's consider the following example:
+
+<source>
+  ...
+  $d = new HTMLDocument($this->getResponce());
+  $d->setTemplate('path/to/template.html');
+  $d->setVariable('name', $this->getRequest()->getParameter('name'));
+  $this->getResponce()->setDocument($d);
+  ...
+</source>
+
+and the following template:
+
+<pre>
+  &amp;lt;?xml version="1.0" encoding="UTF-8"?>
+  &amp;lt;html>
+    &amp;lt;head>
+      &amp;lt;title>Hello, World!&amp;lt;/title>
+    &amp;lt;/head>
+    &amp;lt;body>
+      &amp;lt;h2>Hello, {%name}&amp;lt;/h2>
+    &amp;lt;/body>
+  &amp;lt;/html>
+</pre>
+
+This will produce a document where the word "World" would be substituted with the request parameter
+<tt>name</tt>.
+
+The HTML package allows scope nesting. It means that each opening tag advances the template 
+variable stack pointer, while each closing tag pushes it back. If the opening tag itself adds 
+template variables, they will not overwrite the existing variables with the same names. Such tags 
+are, for example, the <class>HTMLShowObject</class> or <class>HTMLShowIterable</class>. The former
+simply extracts all key-value pairs or properties of an array or object into the current variable
+stack:
+
+<source>
+  ...
+  $d->setVariable('folks', array(
+    'mom'=>'Mrs.Black',
+    'dad'=>'Mr.Black',
+    'kid'=>'Joe Black'));
+  ...
+</source>
+
+and the template
+
+<html>
+  ...
+  <HTMLShowObject key="folks">
+    Mom: {%mom}<br/>
+    Dad: {%dad}<br/>
+    Kid: {%kid}<br/>
+  </HTMLShowObject>
+  ...
+</html>
+
+will show the names of the three. The <tt>key</tt> attribute of the <class>HTMLShowObject</class> tag
+denotes the name of the template variable that holds an array or an object. The tag searches for the
+template variable <tt>folks</tt> which was set to contain a three-element array, applies the
+<tt>foreach</tt> loop to its keys and values and sets the three template variables. Inside the 
+<class>HTMLShowObject</class> tag you can reference the three by the names of the corresponding keys 
+in the array. However, after the tag is closed, the three variables will be destroyed, and accessing 
+them will not show their values.
+
+To demonstrate how variable scope nesting works, let's modify the above code and template:
+
+<source>
+  ...
+  $d->setVariable('kid', 'John Doe');
+  $d->setVariable('folks', array(
+    'mom'=>'Mrs.Black',
+    'dad'=>'Mr.Black',
+    'kid'=>'Joe Black'));
+  ...
+</source>
+
+<html>
+  ...
+  Kid: {%kid}<br/>
+  <HTMLShowObject key="folks">
+    Mom: {%mom}<br/>
+    Dad: {%dad}<br/>
+    Kid: {%kid}<br/>
+  </HTMLShowObject>
+  Kid: {%kid}<br/>
+  ...
+</html>
+
+The resulting document will have the line "Kid: John Doe" dipslayed, followed by the Blacks family,
+and followed by "Kid: John Doe" again. This is how it happens: we set two template variables, one is
+a string named <tt>kid</tt>, and the second is an array with three elements, one of which is 
+<tt>kid</tt> also. Before the <class>HTMLShowObject</class> tag, we have the original value of the 
+<tt>kid</tt> variable. When the tag opens, it extracts the key-value pairs into the variable stack
+so that when the template processor encounters the <tt>{%kid}</tt> construct, it will find the
+'Joe Black' value and output it. When the tag closes, the three variables will be lost, restoring
+the original value of the <tt>kid</tt> variable to the 'John Doe' value.
+
+If, however, we didn't include the <tt>'kid'=>'Joe Black'</tt> element into the array, the output
+would contain the 'John Doe' as the kid of Blacks family, since then the template processor would
+look for the variable in the previous stacks. 
+
+The HTML package also supports custom tags that may repeat content. For example, the 
+<class>HTMLShowIterable</class> iterates over instances of the <class>Iterable</class> interface.
+These may include SQL query result sets, iterable arrays etc. In the case of database query result 
+sets this tag will extract columns of the next record as the template variables on each iteration
+so you can access their values like in the previous examples:
+
+<source>
+  ...
+  $data = array(
+    array(
+      'title'=>'Widget 1',
+      'price'=>'1.95'),
+    array(
+      'title'=>'Widget 2',
+      'price'=>'2.95'),
+    array(
+      'title'=>'Widget 3',
+      'price'=>'3.95'));
+    
+  $d->setVariable('products', new IterableArray($data));
+  ...
+</source>
+
+<html>
+  ...
+  <HTMLShowIterable key="products">
+    Item: {%title}, price: {%price}<br/>
+  </HTMLShowIterable>
+  ...
+</html>
+
+The above would produce a list of two products and their prices.
+
+You can also use special tags and template variables to hide/display certain parts of the template.
+You achieve this by using the <class>HTMLIfSet</class> and <class>HTMLIfNotSet</class> tags. Their
+single attribute, <tt>key</tt>, should contain a name of the template variable that evaluates to
+boolean. These tags will test the value of the variable, and, based on that, will enable or disable
+the display of their content:
+
+<source>
+  ...
+  $d->setVariable('success', true);
+  ...
+</source>
+
+<html>
+  ...
+  <HTMLIfSet key="success">
+    <p style="color: Green"><b>Success!</b></p>
+  </HTMLIfSet>
+  <HTMLIfNotSet key="failure">
+    <p style="color: Red"><b>Failure!</b></p>
+  </HTMLIfNotSet>
+  ...
+</html>
+
+The example will display both paragraphs as there is the <tt>success</tt> variable present and the
+variable <tt>failure</tt> was not defined.
+
+Another important concept of the tempating system is the support for regions. A region basicly is 
+a piece of template that can be repeated elsewhere in the template. You define a region once while
+you can reuse it multiple times. This allows both to speed up parsing of complex templates and also
+to ease the possible changes in the appearance of the region - instead of changing similar
+markup in many places, it will be possible to update markup in the region, and the changes will
+appear everywhere that region is displayed.
+
+You create regions with the <class>HTMLRegion</class> tag and display that with the 
+<class>HTMLShowRegion</class> tag:
+
+<html>
+  ...
+  <HTMLRegion name="myRegion">
+    Hello, this is my first region. You can use template variables here also: {%name}
+  </HTMLRegion>
+  ...
+  <HTMLShowRegion name="myRegion" />
+  ...
+</html>
+
+As you can see, each region is referred by name so that you can distinguish multiple regions. 
+If you use template variables in the definition of the region, the actual values displayed will 
+depend on the current variable scope, for example:
+
+<source>
+  ...
+  $d->setVariable('name', 'Mariah');
+  $d->setVariable('lastName', 'Carey');
+  $d->setVariable('person', array(
+    'name'=>'Whitney',
+    'lastName'=>'Houston'));
+  ...
+</source>
+
+and the template:
+
+<html>
+  ...
+  <HTMLRegion name="r1">
+    First Name: {%name}, Last Name: {%lastName}<br/>
+  </HTMLRegion>
+  ...
+  <HTMLShowRegion name="r1"/>
+  <HTMLShowObject key="person">
+    <HTMLShowRegion name="r1"/>
+  </HTMLShowObject>
+  ...
+</html>
+
+will display the names of the two artists, regardless of the fact that the region was defined in 
+the scope where the first singer's name was available.
+
+Starting from version 1.1.0.Stable the Freeform Framework supports inclusion of PHP processing
+instructions into the templates. They should contain valid PHP source code; in each PHP block
+it has read access to the currently available template variables as local variables. The block
+can echo or print strings that will be included into the resulting document with no further
+transformations, so you can create HTML markup in these blocks:
+
+<source>
+  ...
+  $d->setVariable('name', 'Frank Sinatra');
+  ...
+</source>
+
+and the template:
+
+<html>
+  ...
+  <?php
+  
+    echo '<b>' . strToUpper($name) . '</b>';
+  ?>
+  ...
+</html>
+
+will display bold capitalized name of the singer. You can eclose such blocks of PHP code into
+the tags that iterate content; on each iteration the values of the variables will change
+(consider the example code with two products above):
+
+<html>
+  ...
+  <HTMLShowIterable key="products">
+    Item: {%title}, price: <?php echo $price * 1.2; ?><br/>
+  </HTMLShowIterable>
+  ...
+</html>
+
+will automagically markup every price by 20%. Unlike reading the template variables, the code
+in these blocks cannot change the values of the template variables; doing so will not yield any
+result. Also note that this approach is against the MVC idea and should be only used if there
+is no possibility to create custom tags to do the actual work of producing formatted or 
+complicated content.
+
+Starting with version 1.1.0.Stable the tags can access their attribute values as references
+to other template variables:
+
+<source>
+  ...
+  $d->setVariable('buttonCaption', 'Push me');
+  ...
+</source>
+
+<html>
+  ...
+  <input type="button" value="%buttonCaption"/>
+  ...
+</html>
+
+will produce this:
+
+<input type="button" value="Push me"/>
+
+Starting with 1.2.0.Alpha the <package>html</package> package supports the <package>i18n</package>
+API. It allows you to embed translateable message into the text nodes of template, as well
+as into the attribute values. Suppose you have a message file:
+
+<pre>
+[en_Official]
+hello="Hello!"
+send="Submit"
+
+[de_Official]
+hello="Hallo!"
+send="Senden"
+</pre>
+
+and somewhere in your action:
+
+<source>
+  ...
+  $d->setLocale(I18N::getLocale('DE')); // will set the language to de, Official
+  ...
+</source>
+
+then a template:
+
+<html>
+  ...
+  {@hello}<br/>
+  ...
+  <input type="button" value="@send"/>
+  ...
+</html>
+
+will produce:
+
+Hallo!<br/>
+<input type="button" value="Senden"/>

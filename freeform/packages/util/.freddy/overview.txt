@@ -1,0 +1,42 @@
+<b>Util Package Overview</b>
+
+This package is a helper package and contains different utility classes and interfaces. 
+They do not rely on other Freeform packages and can be used even in non-freeform
+applications. 
+
+<b>Here is a brief description of the most important classes of this package:</b>
+
+<ul>
+  <li>
+    <b>interface <class>Iterable</class></b><br />
+    This is a basic interface that represents a collection of items that can be 
+    iterated over. It declares two methods, <tt>hasMore()</tt> and <tt>getNext()</tt>,
+    that are used to test if there are more items available and fetch next item and
+    advance to the next item. Note that this interface has no connection to the SPL
+  </li>
+
+  <li>
+    <b>interface <class>PaginatedIterable</class></b><br />
+    This interface extends Iterable and provides additional methods to access the iterable's
+    items trough pages. You will be dealing with instances of this interface when
+    you obtain result sets form database query in the SQL package. The <class>HTMLShowIterable</class>
+    and <class>HTMLShowPagination</class> tags from the HTML package utilize paginatedIterable's methods
+    to automatically show repeated paginated content
+  </li>
+
+  <li>
+    <b><class>Validator</class></b><br />
+    This is an abstract class with just one method, <tt>isValid()</tt>. The purpose of this
+    class is to unify arbitrary values validation by applications that collect
+    input and pass them over to other applications not knowing the nature of the
+    data collected. For example, <class>InputField</class>s actively employ validators to check the validity
+    of user-submitted data.
+  </li>
+
+  <li>
+    <b><class>NoMoreElementsException</class>, <class>ConfigurationException</class></b><br />
+    These two exceptions are thrown when <class>Iterable</class> attempts to read past end 
+    of iterated over entity in its <tt>getNext()</tt> method and when 
+    certain package detects that it has not been properly configured.
+  </li>
+</ul>

@@ -1,0 +1,37 @@
+<b>i18n and UTF-8: Ready for Multilingual Applications</b>
+
+The Freeform framework is the only PHP5 framework that is UTF-8-enabled to
+ease the creation of multilingual and localized web applications. From now,
+you do not have to worry about the encoding conversion - everything is done in
+UTF-8.
+
+It means that all documents that are produced by application and all data that is
+passed back from the remote client is in UTF-8. The framework enforces the UTF-8
+to be the internal encoding of PHP. This ensures that all your applications can be 
+developed with internationalization that requires no effort.
+
+The simple but powerful <package>i18n</package> package available as a core package starting from
+version 1.2.0 allows you to format numbers, strings, dates and prices as well as to
+to retrieve localized messages for a given locale. This package eliminates all the
+weaknesses of the set_locale() PHP function that is not really cross-platform.
+With i18n, you just specify the locale name only, and you can easily create your own locales.
+
+Starting with the same 1.2.0 branch the <package>html</package> package supports
+internationalization. From now on, you can easily develop localized templates - that
+will automatically translate messages into the language of the current locale.
+
+<b>Note</b><br/>
+Such extended functionality relies on the <tt>mbstring</tt> extension of the PHP, so that you
+will have to enable it if you want to use Freeform 1.2.x. Please also note that you
+will either have to enable the <tt>mbstring.func_overload</tt> in the php.ini or use the
+<tt>mb_*</tt> functions to handle strings. Freeform presets the <tt>mb_regex_encoding</tt> 
+to UTF-8 so that you can safely use <tt>mb_ereg</tt> and friends. If you use <tt>preg_*</tt>
+functions, then you should use the <i>u</i> pattern modifier to correctly match UTF-8 strings.
+
+Also note that you do not have to change anything if you want to develop English-only 
+applications. 
+
+It also must be underlined that you will have to use UTF-8-capable editor to develop 
+localized templates and actions. Zend Studio has such editor, you can set the encoding of the
+saved files to UTF-8. If you do not have such editor, you will have to convert your
+sources to UTF-8 (this again does not apply for the English-only applications).

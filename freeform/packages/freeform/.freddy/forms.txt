@@ -1,0 +1,74 @@
+<b>Standartized Forms Processing</b>
+
+  The Freeform Framework defines a single API for handling forms.
+  Forms are used to pass user supplied parameters to the web application.
+  Forms consist of input fields that allow the user to enter text values, 
+  select options from a list, toggle checkboxes etc.
+
+  When the user clicks the "Submit" button all fields contained in a form
+  get sent back to the application. From the application point of view they
+  are not different from regular parameters passed via URL, however, they
+  may contain sensitive information and therefore must be checked. In general
+  this is called validation.
+
+  Form handling in Freeform is designed such way so that the underlying action
+  that handles the form must not necessarily receive field values from a browser.
+  In fact, the parameters can come from any source - browser, PDF form or a
+  network application. This allows to have one action that can perform its
+  operation on the application data model regardless of the type of the remote
+  client.
+
+  A single form is represented by the Form class contained in the 'freeform'
+  core package. There are few standard input fields possible including
+  text boxes, password input fields and text areas, checkboxes, and select lists.
+  Each input field can have a validator and a default value that will display
+  when the form is shown at the client end. Validators provide simple way
+  of checking field values for consistency.
+
+  You build a form by adding fields to it. From the form's point of view, each
+  field is represented by name and a value. The field can also be one of two 
+  states - valid (if its value will be validated with supplied Validator), 
+  or invalid. The entire form can have more states - it can be submitted
+  and valid. The form is considered submitted if the request contains all
+  parameters that match names of its fields. The form is valid if all its fields
+  are valid. Based on these properties, the Action that processes the form may
+  decide which resulting document to display.
+
+  The form handling has been designed so that the form does not require to know 
+  anything about the document that will be displayed to the user. For example, 
+in an HTML document this is done with the &amp;lt;form&amp;gt; tag. The Freeform 
+Framework just specifies how the forms are handled and what possible input 
+fields are. The document implementation will render the form differently for 
+different document types - for example, for HTML page and a PDF document with
+forms. The document can query the form input fields and the form itself to get 
+their type, values, request method etc and then build its body accordingly.
+
+<b>Note:</b><br />
+The HTML Package shipped with the default Freeform Framework distribution,
+has all necessary facilities to show Forms.
+
+There is one more important feature of the Forms API - they do not necessarily 
+have to be submitted by browsers. You can write a network application that 
+will access the actions that handle forms, supplying correct parameters. The 
+underlying action will query the form submitted state - and the form will 
+detect it has been submitted. For example, you create a search form that has 
+one input field (say, "keyword"). The form triggers an action that is called 
+Search. This action class has the search form. If a user submits the keyword 
+to be looked for from a browser, the form will "see" it has been a valid 
+submission and the Search action will generate a page containing found results. 
+But the very same action with the same form can be called from a network 
+application with the WebMethods<sup>1</sup> call. If the Search action is created with the 
+support of generating some kind of XML document, the remote application will 
+be able to parse the search result for its own use, and the Search action does
+not have to be modified in any way.
+
+This gives great possibilities of writing web applications that are accessed
+by regular web visitors as well as by other remote applications. Such 
+applications may be content aggregation, multiple site search, desktop front-
+ends to web-based databases etc. For example, it is really straightforward to
+create a web-mail system with a desktop client (the client will access the
+mailbox not via POP3/IMAP, but via the WebMethods call).
+
+<small>
+<sup>1</sup> WebMethods is yet unreleased optional API to invoke remote actions from other applications
+</small>

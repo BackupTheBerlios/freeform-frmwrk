@@ -1,0 +1,88 @@
+<b>Freeform Web Application Architecture</b>
+
+To better understand how Freeform applications are built several aspects of how 
+the web works should be reviewed.
+
+A web application is a web server application that interacts with user that uses 
+browser to access internet pages. The data are exchanged via the Hypertext 
+Transfer protocol, or HTTP. The main characteristic of this protocol is that it 
+was designed as stateless - in contrast to the desktop application that is 
+running all the time the user works with it, web application is started and 
+closed each time the user makes a request for a new page form the web.
+
+More specifically, user-web application interaction is a chain of requests 
+and responces. Since modern web applications have rich functionality and have 
+large code, they have to be built and managed in an efficient way. Freeform 
+essentially is a Model-View-Controller framework. This means that there is a 
+unique controller for each possible functionality. In other word, each possible 
+action on the application data model is represented by a separate Action class.
+
+Each request to a Freeform Application is handled by the loader which resides 
+in the web server document root directory. By default, it is called index.php5.
+The loader is responsible for preparing the class autoloading system and loading
+of the Service Provider Interface classes. It then instantiates the front 
+controller class, the ActionController, responsible for initializing the session
+handler, the request adaptor for the calling remote client, and executing the
+requested action. After the action has been executed, the document it produced
+is returned back to the client.
+
+Freeform Framework abstracts the type of remote client. Most frameworks can only
+handle the regular HTTP GET requests and POST requests of type 
+<tt>application/x-www-form-urlencoded</tt> and <tt>multipart/form-data</tt>.
+Freeform, on the other hand, allows your application to support far more clients
+that just browsers: PDF Forms, XML requests or any other arbitrary protocols the
+remote clients use to transmit request data to the web application. Such 
+abstraction is achieved by the introduction of RequestAdaptors. Their sole 
+purpose is decoding the arbitrary format of request parameters. These parameters
+are then accessible to the action requested by the Request object passed to the
+Action's construcor.
+
+Each Action is constructed with the two parameters: the Request and Responce 
+objects. These incapsulate methods for accessing request parameters and for
+specifying the responce document, respectively. This behaviour is described in
+the figure:
+
+<image align="center" file="application.png" />
+
+Most of the time, you will be dealing with <class>Action</class> classes, 
+rarely - with <class>RequestAdaptor</class>s and <class>SessionHandler</class>s 
+(denoted by the white and green backgrounds on the figure). Blue parts of 
+the architecture are beyond your control.
+
+Inside the Action classes methods, you access request variables with the 
+<method>Request::getParameter()</method> method, while return the responce document with
+the <method>Responce::setDocument()</method> method. You obtain instances of these 
+classes associated with the called Action via the <method>Action::getRequest()</method> 
+and <method>Action::getResponce()</method> methods.
+
+Each Action that is requested by the remote client has the following lifetime:
+<ul>
+  <li>
+    The <class>ActionController</class> constructs the requested action class, passing to the
+    constructor the Request and Responce objects;
+  </li><li>
+    The <method>Action::onInit</method> method is called. This is where the Action sets its
+    internal states. This method is called <b>before</b> any security checks
+    are applied. At this time all request variables, headers and cookies are 
+    accessible to the Action;
+  </li><li>
+    The AccessController class the <method>Action::getAccessController</method> 
+    method to retrieve the instance of AccessController class responsible for
+    checking access to the Action:
+    <ul>
+      <li>
+       If the call returned a <tt>null</tt>, the access is considered granted;
+      </li><li>
+       If an object is returned, its <method>AccessController::isAccessible</method> 
+       gets called to check whether the Action can be executed in the current environment;
+      </li>
+    </ul>
+  </li><li>
+    If the access to the Action is granted, the ActionController calls the 
+    <method>Action::process</method> method, otherwise, the 
+    <method>Action::onAccessDenied</method> is called;
+  </li><li>
+    The ActionController queries the <method>Responce::getHeaders</method> and
+    <method>Responce::getBody</method> methods and returns them back to the client.
+  </li>
+</ul>

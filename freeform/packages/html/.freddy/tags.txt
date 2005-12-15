@@ -1,0 +1,403 @@
+  There are a number of tags immediately available with the default distribution.
+  They are used for the most common purposes like displaying repeated and 
+  conditional content, forms and input fields, including files, showing
+  dynamic images and formatting date and time.
+
+  The default tags included with the HTML Document API are:
+
+  <dl>
+    <dt>HTMLDateTime</dt>
+    <dd>
+    <b>Display date/time formatted string</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLDateTime [key="(template variable name)"] [format="(date format string")] [mode="(mode)"]/&gt;
+    </code><br />
+    Attributes:<br />
+    <dl>
+      <dt>key</dt>
+      <dd>
+        the name of the template variable that holds the timestamp of date to display.
+        If omitted, current time will be displayed
+      </dd>
+      <dt>format</dt>
+      <dd>
+        the date format string. If not specified, but the document has the locale set, it will
+        use the locale default; if no locale has been set, then the format will be "d m Y"
+      </dd>
+      <dt>mode</dt>
+      <dd>
+        the mode of the format string: either MODE_DATE, then its syntax is that of PHP date() function (default), 
+        or MODE_STRFTIME, then it will use strftime function conventions
+        will default to "d M Y"
+      </dd>
+
+    </dl>
+    </dd>
+
+    <dt>HTMLIfSet/HTMLIfNotSet</dt>
+    <dd>
+    <b>Display contents of the tags enclosed by this tag if a
+      given template variable has been (or has NOT been) set</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLIfSet | HTMLIfNotSet key="(template variable name)" &gt; ... &amp;lt;/HTMLIfSet | HTMLIfNotSet&gt;
+    </code><br />
+    Attributes:<br />
+    <dl>
+      <dt>key</dt>
+      <dd>
+        the name of the template variable that should evaluate to boolean
+      </dd>
+    </dl>
+    </dd>
+
+    <dt>HTMLIfUser/HTMLIfNotUser</dt>
+    <dd>
+    <b>Display contents of the tags enclosed by this tag if a
+      user has logged (or has NOT logged) in</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLIfUser | HTMLIfNotUser [role="(role)"] &gt; ... &amp;lt;/HTMLIfUser | HTMLIfNotUser&gt;
+    </code><br />
+    Attributes:<br />
+    <dl>
+      <dt>role</dt>
+      <dd>
+        the name of the role the user has to be in order to display the body of the tag.
+        Effective for HTMLIfUser only. If omitted, will (or will not) display the
+        body of the tag based on the user has logged in or not
+      </dd>
+    </dl>
+    </dd>
+
+    <dt>HTMLLink</dt>
+    <dd>
+    <b>Display a hyperlink to another page (location)</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLLink key="(template variable name)" [regular attributes] &gt; ... &amp;lt;/HTMLLink&gt;
+    </code><br />
+    Attributes:<br/>
+    <dl>
+      <dt>key</dt>
+      <dd>
+        the name of the template variable that denotes a Location object. This tag will
+        convert the location to an URL and create the <tt>href</tt> attribute. If the template variable
+        <tt>key</tt> not found, will not display the tag body
+      </dd>
+      <dt>other attributes applicable to the &amp;lt;a&gt; tag</dt>
+      <dd>
+        you may include regular attributes like <tt>class, style, id</tt> etc. They will
+        be output together with the generated <tt>href</tt> attribute.
+      </dd>
+    </dl>
+    </dd>
+
+    <dt>HTMLShowObject</dt>
+    <dd>
+    <b>Extract properties of a non-scalar value into template variables
+      for further display</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLShowObject key="(template variable name)"&gt; <br />
+      (here you can access properties like {%propertyOrElementName}... <br />
+      &amp;lt;/HTMLShowObject&gt;
+    </code><br />
+    Attributes:<br />
+    <dl>
+      <dt>key</dt>
+      <dd>
+        the name of the template variable that denotes a non-scalar value. This tag will
+        extract properties of an object or key=>value pairs of an array so that
+        can be displayed using the {%varName} syntax. If necessary, these tags can be nested
+        if any property is a non-scalar value again.
+      </dd>
+    </dl>
+    </dd>
+
+    <dt>HTMLIfInputFieldErrors</dt>
+    <dd>
+    <b>Display the body if the specified form contains errors</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLIfInputFieldErrors key="(template variable name)" &gt; ... &amp;lt;/HTMLIfInputFieldErrors&gt;
+    </code><br />
+    Attributes:<br />
+    <dl>
+      <dt>key</dt>
+      <dd>
+        the name of the template variable that denotes a Form object. This tag will
+        display its body if the form was submitted but the field values were invalid
+      </dd>
+    </dl>
+    </dd>
+
+    <dt>HTMLShowForm/HTMLInput/HTMLIfInputFieldError</dt>
+    <dd>
+    <b>Display the input form, its fields and possible error messages</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLShowForm key="(template variable name)" [regular attributes] &gt;<br />
+      &amp;lt;HTMLIfInputFieldError key="(form field name)"&gt;<br />
+      ...<br />
+      &amp;lt;/HTMLIfInputFieldError&gt;<br />
+      &amp;lt;HTMLInput name="(form field name)" [regular attributes] /&gt;<br />
+      ...<br />
+      [&amp;lt;input type="submit" | type="img" [regular attributes] /&gt;]<br />
+      &amp;lt;/HTMLShowForm&gt;
+    </code><br />
+    Attributes:<br />
+    <dl>
+      <dt>HTMLShowForm key</dt>
+      <dd>
+        the name of the template variable that denotes a Form object. This tag will
+        display its body if the variable is a Form
+      </dd>
+      <dt>HTMLIfInputFieldError key</dt>
+      <dd>
+        the name of the input field. Will display its body if the form was submitted
+        but the field denoted by <tt>key</tt> is invalid
+      </dd>
+      <dt>HTMLInput name</dt>
+      <dd>
+        the name of the input field to display. This tag will actually render
+        <tt>textarea, select</tt> or <tt>input</tt> tags with differe types
+        (<tt>checkbox, password, text</tt>) depending of the form field type.
+        If the submitted field was incorrect, its value will be cleared
+      </dd>
+      <dt>regular attributes</dt>
+      <dd>
+        you may include regular attributes like <tt>class, style, id</tt> etc. They will
+        be output together with the generated <tt>action, method, enctype</tt> and <tt>value</tt> attributes
+      </dd>    
+    </dl>
+
+    You will have to manually add the submit button since it is not part of
+    Freeform Forms API.
+    </dd>
+
+    <dt>HTMLShowIterable</dt>
+    <dd>
+    <b>Display an Iterable</b><br />
+    Syntax:<br />
+    <html>
+<HTMLShowIterable key="(template variable name)">
+  <ifempty>
+    (something to display if the iterable is empty)
+  </ifempty>
+  <ifnotempty>
+    (something to display if the iterable is not empty)
+  </ifnotempty>
+  <ifodd>
+    (something to display if the iterable position is an odd number)
+  </ifodd>
+  <ifeven>
+    (something to display if the iterable position is an even number)
+  </ifeven>
+    (repeated content here)...
+</HTMLShowIterable>
+    </html><br />
+    Attributes:<br />
+    <dl>
+      <dt>key</dt>
+      <dd>
+        the name of the template variable that denotes an Iterable object. This tag will
+        display its body if the variable is an Iterable
+      </dd>
+    </dl>
+
+    As you see from the syntax, it is possible to define the <tt>ifempty, ifnotempty,
+    ifodd, ifeven</tt> tags within the <tt>HTMLShowIterable</tt>. These are manipulated
+    by the tag itself, if present and get displayed only if appropriate. The rest
+    tags and text nodes will display on each iteration.
+
+    On each iteration this tag creates the following template variables:
+    <dl>
+      <dt>{%html.showiterable.value}</dt>
+      <dd>
+        current value from the iterable. Can be anything
+      </dd>
+      <dt>{%html.showiterable.position}</dt>
+      <dd>
+        current position of the iterable. Valid even for <class>PaginatedIterable</class>s
+        with paging set.
+      </dd>
+      <dt>other template variables</dt>
+      <dd>
+        this depends on the nature of the iterable item values. If the current
+        value is scalar, no variables will be created, the actual value will be accessed
+        by <tt>{%html.showiterable.value}</tt>. However, if the current value is
+        non-scalar, its elements (for arrays) or properties (for objects) will
+        be extracted into the template variables along with their values so it 
+        will be possible to access them by <tt>{%propertyOrElementName}</tt>
+      </dd>
+      <dt>
+        {%html.showiterable.start}, {%html.showiterable.end}, 
+        {%html.showiterable.page}, {%html.showiterable.pagescount}, 
+        {%html.showiterable.total}
+      </dt>
+      <dd>
+        these are created only if the iterable is a <class>PaginatedIterable</class>. They
+        denote start and end row numbers, current page, total pages and total
+        elements in the <tt>PaginatedIterable</tt>
+      </dd>
+    </dl>
+    </dd>
+
+    <dt>HTMLShowPagination</dt>
+    <dd>
+    <b>Display a pagination bar to access more pages of <class>PaginatedIterable</class></b><br />
+    Syntax:<br />
+    <html>
+<HTMLShowPagination key="(template variable name)" displaypages="(number of page numbers to dipslay)"> 
+  <ifnotempty>
+    (something to display if the pagination is not empty)
+  </ifnotempty>
+  <separator>
+    (something that will separate pages)
+  </separator>
+  <firstpage>
+    (something that will display a link to the first page, normally a HTMLLink)
+  </firstpage>
+  <prevpage>
+    (something that will display a link to the previous page, normally a HTMLLink)
+  </prevpage>
+  <nextpage>
+    (something that will display a link to the next page, normally a HTMLLink)
+  </nextpage>
+  <lastpage>
+    (something that will display a link to the last page, normally a HTMLLink)
+  </lastpage>
+  (repeated content here)...
+</HTMLShowPagination>
+    </html><br />
+    Attributes:<br />
+    <dl>
+      <dt>key</dt>
+      <dd>
+        the name of the template variable that denotes a <class>PaginatedIterable</class> object. 
+        This tag will display its body if the variable is a PaginatedIterable
+      </dd>
+      <dt>displaypages</dt>
+      <dd>
+        denotes how many page numbers (default 10) will be shown by this tag.
+        If the total number of pages in the iterable exceeds this value,
+        the entire pagination will shift, trying to center current page number
+      </dd>
+    </dl>
+
+    As you see from the syntax, it is possible to define the <tt>prevpage, nextpage,
+    firstpage, lastpage, separator</tt> tags within the <class>HTMLShowPagination</class>. These are manipulated
+    by the tag itself, if present and get displayed only when appropriate. The rest
+    tags and text nodes will display on each iteration.
+
+    On each iteration this tag creates the following template variables:
+    <dl>
+      <dt>{%html.showpagination.link}</dt>
+      <dd>
+        a <class>Location</class> object that points to the corresponding result page. Ready
+        to use with <class>HTMLLink</class>
+      </dd>
+      <dt>{%html.showpagination.page}</dt>
+      <dd>
+        current page number being displayed
+      </dd>
+    </dl>
+    </dd>
+
+    <dt>HTMLIncludeFile</dt>
+    <dd>
+    <b>Include another template</b><br />
+    Syntax:<br />
+    <code>
+      &amp;lt;HTMLIncludeFileTime key="(template variable name)" | (name="(file name)" [package="(package name)"]) /&gt;
+    </code><br />
+    Attributes:<br />
+    <dl>
+      <dt>key</dt>
+      <dd>
+        denotes template variable that holds the fully qualified file name of the 
+        template to be included
+      </dd>
+      <dt>name</dt>
+      <dd>
+        the name of the file to be included
+      </dd>
+      <dt>package</dt>
+      <dd>
+        the optional package name to search for the resource file denoted by the 
+        <tt>name</tt> attribute
+      </dd>
+    </dl>
+
+    You can only use <tt>key</tt> or <tt>name</tt> and (optionally) <tt>package</tt>
+    attributes. If you use <tt>name</tt>, the file will be treated as resource
+    in the package where the called action is defined. If you specify the
+    <tt>package</tt> attribute in conjunction with <tt>name</tt> attribute,
+    the file will be looked in that package resources directory instead.
+
+    In the included template all the variables of the enclosing template
+    will be available. You can use this tag inside an iterating tag; 
+    imported tags are included as children of the <tt>HTMLIncludeFile</tt> and
+    removed in the <tt>onClose()</tt> method. 
+    </dd>
+
+  <dt>HTMLRegion</dt>
+  <dd>
+    <b>Define a template region for later reuse</b><br />
+    This tag allows you to define a region that can be later displayed in
+    other places in the template.<br />
+    Syntax:<br />
+    <html>
+<HTMLRegion name="(name)" show="show">
+  (content of the region)...
+</HTMLRegion>
+    </html><br />
+    Attributes:
+    <dl>
+      <dt>name</dt>
+      <dd>the name of the region for further reference</dd>
+      <dt>show</dt>
+      <dd>
+        set this attribute to force immediate display of the region by this tag.
+        If you do not want to display the content at the place of this tag, simply do not specify this attribute
+      </dd>
+    </dl>
+  </dd>
+
+  <dt>HTMLShowRegion</dt>
+  <dd>
+    <b>Show a region previously defined by HTMLRegion</b><br />
+    Syntax:<br />
+    <html>
+<HTMLShowRegion name="(name)" />
+    </html><br />
+    Attributes:
+    <dl>
+      <dt>name</dt>
+      <dd>the name of the region to be displayed as defined in the HTMLRegion tag</dd>
+    </dl>
+  </dd>
+
+  <dt>HTMLImage</dt>
+  <dd>
+    <b>Show an image dynamically generated by some action or from the resource folder</b><br />
+    Syntax:<br />
+    <code>
+&amp;lt;HTMLImage key="template variable name" | name="resource file name" [package="package name"] /&gt;
+    </code><br />
+    Attributes:
+    <dl>
+      <dt>key</dt>
+      <dd>the name of the template variable that denotes a <class>Location</class> object of the action that produces the image</dd>
+      <dt>name</dt>
+      <dd>the name of the resource file to dipslay</dd>
+      <dt>package</dt>
+      <dd>the name of the package where the resource exists. If not specified, will be set to the
+        name of the package that holds the default action</dd>
+    </dl>
+  </dd>
+</dl>
+
+Please note that you will have to specify all tag class names in the .spi files

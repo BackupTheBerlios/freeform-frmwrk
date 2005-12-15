@@ -1,0 +1,76 @@
+<b>Using Tags in the Templates</b>
+
+The templates used by the <class>HTMLDocument</class> are well-formed XML files
+that contain standard HTML tags as well as special custom tags. It is necessary
+to understand that templates are XML files as they must follow the strict rules
+of nesting tags. What was possible in HTML may not be possible with XML templates
+like using unquoted tag attributes, mixing tag case and violating the order
+of open/close tags. For example:
+
+<pre>
+&amp;lt;P style=myStyle>&amp;lt;b>Some poor-formatted HTML&amp;lt;/p>&amp;lt;/B>
+</pre>
+
+is viewable by most browsers, however, it is not well-formed XML as it mixes the
+order of open/close tags and uses different case for tag names; besides, the
+attribute is unquoted. To be a valid XML, it has to be rewritten like:
+
+<pre>
+&amp;lt;p style="myStyle">&amp;lt;b>Some well-formed HTML&amp;lt;/b>&amp;lt;/p>
+</pre>
+
+The <package>html</package> 
+allows you to create custom tags that can render complex, 
+repetitive or conditional content. To create a custom tag, you will need to subclass
+the <class>HTMLTag</class> and define its <method>HTMLTag::onOpen</method> that will
+be called every time the tag is encountered in the template (for a detailed discussion
+of the tag's lifetime, please refer to the <class>HTMLTag</class> class docs).
+
+The tag attribute values can follow special syntax and interpolate the template
+variables and locale messages. Any tag in the template (including standard HTML tags) can
+access the values of the template variables following this notation:
+
+<pre>
+&amp;lt;a href="{%someURL}">Go to {%someURLDesc}&amp;lt;/a>
+</pre>
+
+In this example, the <tt>href</tt> attribute of the tag will be set to the value of
+the template variable <tt>someURL</tt> (provided it has been set before). You can also
+combine several template variables in a single tag attribute:
+
+<pre>
+&amp;lt;a href="{%host}/{%path}">Click here&amp;lt;/a>
+</pre>
+
+You can also access localized messages in the tag attributes following this notation:
+
+<pre>
+&amp;lt;a href="{%someURL}" title="{@clickMe}">{@clickMe}&amp;lt;/a>
+</pre>
+
+This will set the tag's <tt>title</tt> attribute to contain the localized message with the
+ID of <tt>clickMe</tt> (provided the containing <class>HTMLDocument</class> was properly setup 
+with a <class>I18NLocale</class> via a call to <method>HTMLDocument::setLocale</method>() method).
+Like with the template variables, you can combine several localized messages IDs in a single
+attribute or mix it with other static text and variables:
+
+<pre>
+&amp;lt;a href="http://{%host}/{%path}" title="{@clickMe} - {%host}. {@someID}">{@clickMe}&amp;lt;/a>
+</pre>
+
+Also there is a possibility to access localized messages dynamically (both in attributes and
+in CData blocks):
+
+<pre>
+&amp;lt;a href="{%someURL}" title="{@%messageID}">Click me&amp;lt;/a>
+</pre>
+
+This will set the <tt>title</tt> attribute to contain the localized message whose ID is stored
+in the <tt>messageID</tt> template variable. If, for example, the value of this variable were
+<i>clickMe</i>, then the <tt>title</tt> attribute would contain the value of the <tt>clickMe</tt>
+message translated into the containing document's locale dialect.
+
+<b>Note</b><br/>
+Please note that the described access to variables and messages within tag attributes is enabled
+since version 1.2.0.Beta. Before that you will have to use the old <tt>attr="%var"</tt> notation.
+The 1.2.0.Beta supports both methods, however, the old method is deprecated.

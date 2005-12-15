@@ -1,0 +1,88 @@
+<html>
+  <h2>Repeatable and Conditional Display Demo</h2>
+  Freeform offers a very easy way of showing complicated repeatable content. This demo shows
+  you how to display the contents of a simple array, very similar to a result set from
+  a database query (please see the source and the template of this demo)<br/><br/>
+  
+  <div style="border-style: solid; border-color: Gray; background-color: WhiteSmoke"> 
+    <!-- This tag will iterate through the array of widgets. Since it is a 2-dimensional 
+         array, the keys of the second dimension will be extracted as variables to the template -
+         note how we access every key -->
+    <HTMLShowIterable key="widgets">
+      <!-- This tag, if used within the HTMLShowIterable, will display its content if the iterable
+           was initially empty --> 
+      <ifempty>Sorry, we have no widgets</ifempty>
+      <!-- This tag, if used within the HTMLShowIterable, will display its content if the iterable
+           was not empty --> 
+      <ifnotempty><i>Our Widgets:</i><br /></ifnotempty>
+      Product Title: {%title}<br />
+      Product Description: {%desc}<br />
+      Product Price: <b>{%price}</b>
+      <!-- This tag when used within the HTMLShowIterable, holds the separator that will
+           be repeated if there are more entries in the iterable, after each iteration -->
+      <separator><br /><br /></separator>
+    </HTMLShowIterable>
+  </div><br/><br/>
+  
+  The following section is displayed since we do not have any gismos 
+  (there is no template variable 'gismos'): <br/><br/>
+  
+  <!-- This tag will enable the display of its content if there is no template variable
+       'gismos'. -->
+  <HTMLIfNotSet key="gismos">
+    <div style="border-style: solid; border-color: Red; background-color: WhiteSmoke"> 
+      <b>Sorry, we do not have gismos</b><br/><br/>
+      We are currently out of gismos, please visit us later. Thank you!
+    </div>
+  </HTMLIfNotSet><br/><br/>
+  
+  Next we display two different lists that have the same data layout. For that purpose we will
+  use the region - a piece of the template that can be reused elsewhere in the template.<br/><br/>
+  
+  This is how our region will look like:<br/><br/>
+   
+  <div style="border-style: solid; border-color: Green; background-color: WhiteSmoke"> 
+    <!-- This tag defines the actual region. Note we also place the variables here.
+         We enforce the 'show' attribute of the tag to show the actual content 
+         in this place. -->
+    <HTMLRegion name="product" show="true">
+      <i>Product Title</i>: {%title}<br />
+      <i>Product Description</i>: {%desc}<br />
+      <i>Product Price</i>: <b>{%price}</b>
+    </HTMLRegion>
+  </div><br/><br/>
+  
+  You see the product title set to the title of the page since there currently is a variable
+  of name 'title' - the title of the page. It is a feature of the HTML package that allows you
+  to nest variables in different scopes of visibility. Below you will see the lists generated
+  with the above region and with correct product names (please see the template and the source 
+  again):<br/><br/>
+  
+  <!-- First list -->
+  <div style="border-style: solid; border-color: Gray; background-color: WhiteSmoke"> 
+    <HTMLShowIterable key="widgets1">
+      <ifnotempty><i>The Widgets:</i><br/></ifnotempty>
+      <!-- Since we could not define the ifempty and separator tags in the region
+           itself, we had to repeat them here. HTMLShowRegion actually shows the
+           declared region. The region is referenced by its name -->
+      <HTMLShowRegion name="product"/>
+      <separator><br /><br /></separator>
+    </HTMLShowIterable>
+  </div><br/><br/>
+  
+  <!-- Second list - note it uses the same region -->
+  <div style="border-style: solid; border-color: Gray; background-color: WhiteSmoke"> 
+    <HTMLShowIterable key="gadgets">
+      <ifnotempty><i>The Gadgets:</i><br/></ifnotempty>
+      <HTMLShowRegion name="product"/>
+      <separator><br /><br /></separator>
+    </HTMLShowIterable>
+  </div><br/><br/>
+  
+  
+  Now you can compare the size of the source to estimate how much your time is saved to
+  display this content. The template is also very easy to design - it contains more
+  explanations and comments than the actual markup. However, you were able to produce
+  a fairly complex page with simple steps - and you have the option to freely change the
+  look and feel of the template just in minutes, without having to change the PHP source code.
+</html>

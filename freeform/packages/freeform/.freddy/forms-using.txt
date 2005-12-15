@@ -1,0 +1,178 @@
+<b>Form Processing in Freeform</b>
+
+Freeform Framework offers a standard API for processing forms. It
+includes automatic form field validation and default value setting,
+detecting the submission of the form, accessing and altering field
+values. The HTML package that is present in every Freeform
+installation, has all the tools to display forms, fields and warning
+messages in a very comfort way.
+
+Each form in Freeform application is represented by the
+<class>Form</class> object. Note that unlike other MVC frameworks,
+this class does not extend the <class>Action</class> class. This
+is a major step forward as it allows you to use multiple forms on the
+same page, as well as to reuse the same form on different pages.
+Moreover, extending the <class>Form</class> you can create standalone
+forms that will contain a predefined set of fields and can be reused
+by other actions.
+
+The main characteristic of the form is the location of the action that
+will be used to process it. Compared to the <tt>action</tt> attribute
+of the generic HTML form, this sets the action class that will be
+executed when the form is submitted. The action will instantiate the
+same form and call one or a few methods of the form object to detect
+its submitted/valid state. Based on that the action can decide whether
+to process the data or to redisplay the page in case of erroneous
+input or to redirect to some other page.
+
+The form consists of one or more input field objects that extend the
+<class>InputField</class>. Currently there are five of them:
+<ul>
+  <li>
+    <class>TextInputField</class> - used to create text, password
+    and textarea fields, can validate against arbitrary
+    <class>Validator</class>
+  </li>
+  <li>
+    <class>CheckboxInputField</class> - used to create check boxes
+  </li>
+  <li>
+    <class>RadioButtonInputField</class> - used to create sets of
+    radiobuttons that share the same name from an array of values
+  </li>
+  <li>
+    <class>SelectInputField</class> - used to create drop-down select
+    lists from the supplied array of key=>value pairs
+  </li>
+  <li>
+    <class>UploadFileInputField</class> - used to create upload file
+    input fields that can validate against given mime types and size
+    limit
+  </li>
+</ul>
+These classes represent the common interface elements of a form.
+
+Besides input fields, the form can also contain parameters -
+non-editable elements that carry additional information about the
+entity being edited (i.e., in the HTML documents they are included as
+the hidden fields). You can use this feature to pass along the ID of the
+record you are editing, for example.
+
+Upon submission, the form will detect all incorrectly filled fields
+and reset their values to null. It will also set its validity state to
+false if any of the fields failed validation. 
+
+Most frequently you will use forms that are created and processed by 
+a single action. This very well fits into the MVC paradigm of "one
+controller (action) for each functionality". In such cases you will
+create the form by the action, and this action will be processing the form.
+Below is an example of such action that is used to log in a user:
+
+<source>
+class MyLoginForm extends Action {
+  private $form = null;
+  
+  // This is the best place for creating forms
+  function onInit() {
+    // Create the login form. Pass to it the request of this action as the source of
+    // field data (you will almost always do like that). Also notify the form that
+    // this action will also process the submission.
+    $this->form = new Form($this->getRequest(), new Location($this));
+    
+    // Add the userName field, the default value displayed is '(please enter user name here)'
+    // (it will be displayed on the first access to the page), and the validator is a regular
+    // expression test that requires that at least one character is typed.
+    // Note that we could use some cookie value as the default string dipslayed here, or
+    // any other value from our data model
+    $this->form->addField('userName', 
+      new TextInputField(
+        '(please enter user name here)',
+        new RegexValidator('.+')));
+        
+    // Here we add the password field, with no default value, but with the regular expression check.
+    // Note how we mark the field as password
+    $this->form->addField('password',
+      new TextInputField(
+        '',
+        new RegexValidator('.+'),
+        TextInputField::PASSWORD));
+  }
+  
+  function process() {
+    // Do some document preparations here
+    // ...
+    // See if the form was submitted and valid.
+    if($this->form->isValidSubmission()) {
+      // Select user from the database here
+      if($validUser) {
+        // If the user valid, redirect to success page and exit
+        $this->getResponce()->relocate(new Location('MyLoginSuccess'));
+        return;
+      } else {
+        // The user could not be found, reset fields
+        $this->form->getField('userName')->setValue(null);
+        $this->form->getField('password')->setValue(null);
+        // Also set special template variable badCredentials to true
+        // so that we can display a warning on the page
+        // Suppose $document is the HTML document returned by this action
+        $document->setVariable('badCredentials', true);
+      }
+    }
+    
+    // Set the loginForm template variable to the form so that it will
+    // be displayed. This code is executed regardless of the state of the form;
+    // we will let the template handle displaying warning messages
+    $document->setVariable('loginForm', $this->form);
+    // Set the document template etc
+    // ...
+    $this->getResponce()->setDocument($document);
+  }
+}
+</source>
+
+This example could utilize this sort of template (here we assume we use the HTML package):
+
+<html>
+  ...
+  <HTMLIfSet key="badCredentials">
+    <p style="color: red">
+      You have supplied wrong credentials
+    </p>
+  </HTMLIfSet>
+  
+  <HTMLShowForm key="loginForm">
+    <HTMLIfInputFieldError key="userName">
+      <p style="color: red">
+        Please enter user name<br/>
+      </p>
+    </HTMLIfInputFieldError>
+    User name: <HTMLInput name="userName"/><br/>
+    
+    <HTMLIfInputFieldError key="password">
+      <p style="color: red">
+        Please enter password<br/>
+      </p>
+    </HTMLIfInputFieldError>
+    Password: <HTMLInput name="password"/><br/>
+    
+    <input type="submit" value=" Login "/>
+  </HTMLShowForm>
+  ...
+</html>
+
+As you can see from the template it will display the warning message if the credentials 
+are wrong in first place. Then it will display form, possibly displaying warnings before
+each field stating that the field was incorrectly filled.
+
+The action uses very simple form handling mechanism: it is the sole handler of the form,
+that's why we didn't use separate form class. It also lets the same page display warnings
+(you might want to redirect to a help page if anything goes wrong with the user input).
+In case of successful submission it will redirect to another action (this is the most common
+behaviour).
+
+If this is the first time the form is displayed, the userName input field will contain
+the text '(please enter user name here)'. On subsequent erroneous input it will be empty
+and the warning message will be displayed. If the validation was successful, the action 
+will check if the credentials are valid. If so, you will be taken to another page; 
+otherwise you will be prompted with the message 'You have supplied wrong credentials' and
+have to reenter data.

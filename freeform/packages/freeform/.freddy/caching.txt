@@ -1,0 +1,158 @@
+<b>Caching in Freeform framework</b>
+
+Since the version 1.2.0.Alpha Freeform framework has support for controlling browser-side cache 
+as well as it supports server-side caching of responces. The cache API is very simple, in fact,
+you use three methods of the <class>Responce</class> class: the 
+<method>Responce::setLifeTime</method>(), the <method>Responce::setExpires</method>() 
+and the <method>Responce::setLastModified</method>().
+
+By calling the first two methods the client cache will be instructed to not to reload the document
+for the specified amount of seconds or till the specified moment in time, if a subsequent request is made. 
+This is the most effective
+caching mechanism as it can also employ the server side cache (if it is enabled in the
+<package>freeform</package> package configuration file). If a responce document is stored in the 
+server cache, requests for the same resource from other clients will all be responded
+with the cached version. Note that pages without life time setting can not be cached on the server, as
+well as on the client. The cache will be regenerated only after the specified amount of time 
+has elapsed (i.e, the cache entry has expired).
+
+Using the second method, the browser is instructed what is the time of the last modification
+of a particular responce document. Your actions are responsible of calculating proper last
+modification time if you want to use this way of caching. On subsequent requests the client 
+will send this time and Freeform will compare the two times: if they are equal, the responce
+object will not call the <method>Document::getBody</method>(), but your action will still be
+processed. The advantage here is the time saved for generating the document itself; all
+database access etc. will happen on every request.
+
+The <package>html</package> package also offers caching of parsed templates. Please see its 
+documentation to learn how to enable it.
+
+<b>Private Mode</b><br/>
+It often happens that if your application supports user registration, many (or even all)
+pages will be tailored to a user's preferences (i.e., contain user's name at the top of each page, for example). 
+The problem of such customization is that
+the pages that are produced in a request to the same action with the same set of parameters
+will have different content (since the session will hold the user state; the URLs normally
+do not reflect the fact that the user is logged in). Such behaviour will interfere with the
+caching mechanisms because intermediate caches will cache responces and pass identical copies of 
+them to different users.
+
+To solve this problem Freeform offers private mode of the session. The private mode means
+that the session contains a logged user and that the pages presented to him are customized
+to meet his preferences. By calling the <method>Session::setPrivateMode</method>() you 
+set the session to the private mode. This will avoid caching conflicts by adding a special
+parameter to every URL produced by the <class>Location</class> objects and also will
+store the cached responces separately on the server. Besides, it will force the responce to
+contain the <tt>Cache-control: private</tt> header that will prevent caching of the
+responce by intermediate caches (proxies). Normally you set the session to the private mode
+as soon as the user logs in and reset the mode as soon as he logs out. This method accepts
+a hash that can be, for example, an MD5 of the user name, possibly appended/mixed with
+other identifier that will uniquely denote the content variation (for instance, if your 
+application supports skins, hashing the user name alone will not solve the problem of
+caching conflicts, you will have to hash the skin id also).
+
+Please note that while private mode can really enhance the responsivity and scalability
+of your application, it should be used responsively: as the number of the registered users
+grows, so does the cache, so that in some time you may run out of web space. The intended
+use of the private mode is to allow caching of customized pages when the number of registered
+users (here it means that pages are customized for them) is relatively limited.
+
+<b>Security and Server-Side Caching</b><br/>
+The server-side caching is intended to provide scalability and enhance responsiveness of
+the web application. In Freeform, the runtime will return responces cached on the server
+as soon as the request is made; even before any security check is enforced. This means that
+if a server-cached page contains any sensitive information, it can be retrieved by other
+client easily (i.e., by hijacking the private mode hash). To counteract this, it is possible
+to explicitly disable server-side caching of a particular responce in a call to 
+<method>Responce::setLifeTime</method>() and <method>Responce::setExpires</method>() methods
+by setting their second parameter to <tt>false</tt>. Doing so the responces will be cached
+by the client, but not by the server. This mainly applies to responces generated in the
+private mode of the session and only if the responces contain sensitive user information
+(registration profile, his private messages etc). You can safely ignore this parameter
+when, for instance, you display the home page of your application with the general
+information, but with the user name at the top of the page.
+
+<b>Cookies and Caching</b><br/>
+As soon as the first request during a session is made, almost all session handler implementations
+will send the session cookie to the remote client. While the HTTP specs forbid caching of
+pages that are returned to a request that contains cookies, many browsers still cache
+such responces. 
+
+The HTTP specs forbid caching of such responces because cookies may be used by the server
+to customize the responce document based on their values. Moreover, a responce could
+contain sensitive information that would be stored in a publicly available cache. 
+This problem arises because the URL of a sensitive page does not differ from the URL of
+a simple page, created without cookies. 
+
+The private mode discussed earlier is intended to solve this problem. When in private mode,
+every URL generated will contain a hash, unique to every user. If you disable caching
+of the private mode, you can be sure that there is no security risk. However, if you
+allow the page to be cached on the client for a relatively small period of time (say, 5 mins),
+the security risk is very small, but it can improve the performance drastically. With
+the private mode set, intermediate caches will not cache the responce, so that the cached
+version will exist only on the client side and only for a limited period of time.
+
+<b>Summary</b><br/>
+<ul>
+  <li>
+    Enable server and client side caching of pages that do not expose any user-sensitive
+    information
+  </li>
+  <li>
+    Set the session to the private mode as soon as the user logs in, and reset it to the
+    normal mode as soon as the user logs out
+  </li>
+  <li>
+    Allow client-side caching of pages that contain user-sensitive information, but for
+    a very limited period of time; disable server-side caching of these
+  </li>
+  <li>
+    Allow client- and (possibly) server-side caching of pages that contain user-customized, 
+    but not user-sensitive information, even for a prolonged period of time
+  </li>
+  <li>
+    Using the last-modified time is always safe as every request will undergo
+    the security check on the server; on the other hand, it is not as fast as
+    the life time approach
+  </li>
+  <li>
+    Remember that only responces with the life time or expires time are cacheable by the 
+    server, the clients will store them in their caches and will not send any requests
+    during the freshness of the responces; on the other hand, responces with the
+    last modified time will force the clients to revalidate them with the server
+    on every request
+  </li>
+  <li>
+    If you do not call any of the three cache-enabling methods, the responce will
+    be prevented from being cached
+  </li>
+</ul>
+
+<b>Note</b><br/>
+In the current state the server caching is appropriate for applications that are
+intended for one type of clients only. It means that if a page is cached on the server
+after a request by a rich client and a PDA accesses the same page shortly, the latter will
+receive the page generated for the rich client despite the fact that your application may
+support both types of clients. Please use server side caching responsively.
+
+<b>Enabling Server-Side Caching</b><br/>
+To enable the server side cache you will have to edit the .config file of the 
+<package>freeform</package> package. You will have to specify the following settings:
+<ul>
+  <li>
+    <tt>cache.enable</tt><br/>
+    set this to 1 to enable the server side caching
+  </li>
+  <li>
+    <tt>cache.private</tt><br/>
+    set this to 1 to enable server side caching when in private mode. Note that if you
+    have many registered users enabling this may take all the hard drive for the cache! The best way
+    is to enable it if you have a limited amount of registered users.
+  </li>
+  <li>
+    <tt>cache.path</tt><br/>
+    set this to point to a <b>writable</b> directory. Use the absolute path if possible;
+    otherwise the path will be calculated starting from the directory that contains the
+    index.php file (the Freeform front controller)
+  </li>
+</ul>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <title>Welcome to Freeform</title>
+  </head>
+  
+  <style>
+    BODY {
+      font-family: Tahoma, Verana, Arial, sans-serif;
+      font-size: 10pt;
+      text-align: justify;
+    }
+    
+    SMALL {
+      font-size: 8pt;
+      color: Grey;
+    }
+    
+    IMAGE {
+      border-style: none;
+      border-width: 0px;
+    }
+  </style>
+   
+  <body>
+    <HTMLImage name="logo.gif" border="0px" />
+    <h2>Welcome to Freeform Framework</h2>
+    
+    <small>
+      If you see this page it means that the Freeform Framework has been successfully installed 
+      on this server. The default installation has not yet been configured to launch the web 
+      application at this web site.
+    </small>
+    
+    <p>
+      Freeform Framework is a web application development framework aimed at creating scalable web 
+      apllications. It is not just another MVC framework, it adresses a wider range of common problems
+      web developers face while creating large-scale web applications.
+    </p>
+    
+    <HTMLIfSet key="demo">
+      <HTMLLink key="demo"><HTMLImage package="freeformdemo" name="link.gif" border="0px" /></HTMLLink>
+    </HTMLIfSet>
+
+    <HTMLIfSet key="freddy">
+      <HTMLLink key="freddy"><HTMLImage name="link-freddy.gif" border="0px" /></HTMLLink>
+    </HTMLIfSet>
+    
+    <h3>Features</h3>
+    <small>The core features of Freeform Framework are:</small>
+    <ol>
+    <li>
+    The <b>MVC approach</b> that separates business logic from presentation logic. In Freeform, it is impossible
+    to write business logic code that will generate resulting HTML directly. The bundled <package>html</package>
+    package that implements the best templating engine in PHP5 world, while allowing you to 
+    stick small PHP code fragments, discourages this and is truly XML-based. With its tools you can
+    create your own tags that will present complex content and separate the business logic from the
+    presentation logic. The template designers will never have to type endless URLs and select lists
+    or take care of not destroying some parts of embedded PHP code, while the programmers can concentrate
+    on code manageability because their code is free from any markup.
+    </li><li>
+    The framework also offers an elegant <b>form processing</b> automation solution. All you have to do now is to create a form
+    class and add fields to it, specifying validators. Upon submission the form will validate itself, and, if it fails,
+    you can redisplay the page where wrong input will be re-prompted saving the correct input. File uploads are also
+    fully automated; you can validate upload correctedness with no coding at all.
+    </li><li> 
+    <b>Packages</b> is a solution to application modularity. With Freeform, it is 
+    easy to create separate packages, or modules, that solve some common sub-application problems 
+    (a forum, for instance). Using its own configuration the package can easy plug into your existing application in 
+    seconds with no additional programming. You will just have to modify several configuration setting and you are done!
+    </li><li>
+    <b>Session API</b> is a new approach to handling sessions and users. It unifies interface to sessions while giving you
+    the ability to choose from many underlying implementations. Thus, the packages are unaware from all session and user          
+    handling tricks. Unified user handling guarantees that whatever user model your application has, other packages will
+    be sure that there is a current user and what role he has.
+    </li><li>
+    <b>Security API</b> is a standard way to protect critical areas of your application from unauthorized access. Each user
+    action is checked against a security policy that makes decisions on whether the request can be completed 
+    in the current environment.
+    You can then configure other packages to use your security policies to protect access to them. Besides,
+    the user system is role-based, where you define the roles and instruct other packages which roles to allow or to
+    deny. Being that simple, you can easily define your custom and reusable security policies for the entire application.
+    </li>
+    </ol>
+    
+    <small>
+    Freeform Framework<br/>
+    (c) 2004 -<HTMLDateTime format=" %Y" /> Dennis Popel<br/><br/>
+    <HTMLLink key="demo">Freeform Demo</HTMLLink> <HTMLLink key="freddy">View Documentation</HTMLLink> <a href="http://dev6.php5.nedlinux.com/">ProjectsHosted</a>
+    </small>
+  </body>
+</html>  

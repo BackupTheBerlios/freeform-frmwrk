@@ -1,0 +1,18 @@
+<b>Message File Format</b>
+
+The format of the messages file is very straightforward, you can create it with
+any UTF-8 enabled editor (like Zend Studio). Here is an example of such file:
+
+<tt>
+[en_Official]<br/>
+hello="Hello!"
+
+[en_American]<br/>
+hello="Hi!"
+
+[es_Official]<br/>
+hello="¡Hola!"
+</tt>
+
+The file consists of several sections labeled in form lc_dc (language code, the underscore
+and the dialect code).

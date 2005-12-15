@@ -1,0 +1,90 @@
+Freeform Framework is a web application framework aimed at creating scalable
+web apllications. It is not just another MVC framework, it adresses a wider
+range of common problems a programmer faces while developing an application
+for the net. It is a commitment to building an industry-standard framework
+that must have understandable architecture, strict standards and extensible
+features. We have the clear vision of the framework as a whole and the
+dramatic benefits it offers for web developers. It was created from ground up,
+it is not a clone of any MVC framework for other platforms, it is easy to
+learn and easy to extend. Once you get the grasp of all the tools the
+framework has to offer, you will be amazed how quickly and easily it is to
+create versatile and multifuctional web application.
+
+<b>Features Overview:</b>
+<ul>
+  <li>
+    <doc file="mvc.txt"><b>Model-View-Controller Architecture</b></doc><br/>
+    The MVC architecture implemented as the core feature of the Freeform Framework
+    allows to define possible actions on the model and render the results of that
+    action using different document types suitable for the user agent.
+    Each client request implies access to one of many Action classes your
+    application consists of. These are responsible for the controller part of the
+    architecture. Based on their semantics and the parameters supplied by client
+    in the request, the <class>Action</class>s return response documents. The <class>Document</class> interface
+    represents the view part of the MVC ideology. Document implementations can
+    produce responces for diverse types of clients, but such diversity does not
+    affect the controller part. Actions can also serve as part of the model,
+    possibly coupled with a database or different storage system.<br />
+  </li>
+
+  <li>
+    <doc file="forms.txt"><b>Standartized Forms Processing</b></doc><br/>
+    The framework also offers an elegant form processing automation solution.
+    All you have to do now is to create an instance of the <class>Form</class> class and add
+    fields to it, possibly specifying value validators. Upon submission, the form
+    will validate itself, and, if it fails, you can redisplay the page where wrong
+    input will be re-prompted while saving the correct input. File uploads
+    are also fully automated; you can validate upload correctedness with no coding
+    at all. There are just a few methods that do the job for you!
+  </li>
+
+  <li>
+    <doc file="packages.txt"><b>Class and Resource Packaging, Automatic Class
+      Discovery and Loading, Service Provider Interface</b></doc><br/>
+    Packages in Freeform Framework are an effort of compensating the drop of
+    namespaces from PHP5. However, it has turned out that packages have even more
+    to offer rather than just convenience of organizing classes. You use packages
+    to distribute package-related resources like multimedia files and document
+    templates. Package API offers simple methods for retrieval of these resources
+    as well as reading the package configuration. Packages can be configured for
+    each and every environment they are used in. <br />
+    Thanks to packages and the strict standart of class source files it was
+    possible to create class discovery and loading system that saves you the
+    trouble of including every required file. With Freeform, you will not ever
+    write the 'require_once(...)' stuff. All classes are automatically loaded as
+    they are needed. <br />
+    Service Provider Interface is a concept of informing the framework of what
+    classes in the package are implementing or extending some APIs. By so doing
+    the framework can locate, for example, classes that provide the RequestAdaptor
+    functionality. Compared to forced loading of all classes, this approach is much
+    more efficient.
+  </li>
+
+  <li>
+    <doc file="sessions.txt"><b>Sessions and Security</b></doc><br/>
+    Each framework installation guarantees there is a session handler available so
+    that your appilcations and packages may rely on it. Sessions have a very simple
+    interface and allow you to choose from many underlying implementations. Thus,
+    the packages are unaware from all session and user handling tricks. The
+    framework also generalizes the concept of an user. Users are implementations
+    of the <class>User</class> interface. The basic property of an user it his role. Role is a
+    string describing what the user can do. The User interface declares 
+    several methods that allow creation of or integration with diverse user management systems. 
+    Sessions are required to
+    serialize and deserialize the current user between requests. However, you
+    can choose to define your more versatile security policies with the help
+    of <class>AccessController</class> objects. On every request the <class>Action</class> is queried to
+    return its AccessController. It is further checked to determine whether
+    the Action can be executed in the current environment. You can reuse and extend
+    AccessControllers with other actions and in other packages.
+  </li>
+
+   
+  <li>
+    <doc file="utf8.txt"><b>i18n and UTF-8: Ready for Multilingual Applications</b></doc><br/>
+    The Freeform framework is the only PHP5 framework that is UTF-8-enabled to
+    ease the creation of multilingual and localized web applications. From now,
+    you do not have to worry about the encoding conversion - everything is done in
+    UTF-8.
+  </li>
+</ul>

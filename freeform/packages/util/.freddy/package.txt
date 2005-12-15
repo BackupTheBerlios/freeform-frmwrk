@@ -1,0 +1,8 @@
+/**
+This package is a helper package and contains different utility classes 
+and interfaces. They do not rely on other Freeform packages and can be 
+used even in non-Freeform applications.
+@since Freeform Framework 1.1.0 Beta
+@author Dennis Popel
+@see <doc file="overview.txt">Package Overview</doc>
+*/

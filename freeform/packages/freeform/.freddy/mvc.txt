@@ -1,0 +1,48 @@
+<b>Model-View-Controller Architecture</b>
+
+The MVC approach is geared towards separation of business and presentation
+logic. It has evolved in the desktop application programming but it is most
+suitable for web applications. The idea behind MVC is simple - every 
+application can be split into three parts: 
+
+<ul>
+<li>the data model that represents the data, their structure and internal
+links, possibly with methods of changing, creating and deleting pieces of 
+that data in case of object-oriented representation of business entities;
+</li>
+<li>the controllers that process the input from user and alter or retrieve
+requested data;
+</li>
+<li>the views that display the user actual results of actions taken by 
+the controllers.
+</li>
+</ul>
+
+In Freeform Framework, the remote user that interacts with the application
+over the HTTP protocol, always interacts with the controllers. The controllers
+in Freeform are called Actions to reflect the fact that each controller is
+the possible action of the user.<br />
+The Actions are interacting with the model which can be anything from
+simple flat-file-based database to complex relational databases residing
+on SQL servers or even object databases. Also Actions are responsible for
+preparing correct views, or responce documents, to be returned to the user
+as a result of the Action execution. Generally, responce documents will
+be regular HTML files, however, you can easily generate WML/XML content,
+images, audio files or simple plain text.<br />
+In Freeform, the responce documents are implementations of the Document
+interface. These objects are created by Actions, possibly filled with
+some variables to be returned in form of text, graphics or multimedia, can
+contain input forms and links that trigger other Actions.<br />
+The client requests some Action to be processed on the server by clicking
+on hyperlinks or submitting a form. Each Action queries or alters the model
+and prepares the resulting view (usually it means instantiating a Document
+implementation instance, setting some variables in the Document and returning
+the Document to the user).<br />
+The MVC approach as implemented in Freeform Framework, looks like this:
+
+<image file="mvc.jpg" align="center" />
+
+As you can see, all requests are handled by Actions that may query the data 
+	model and pass the results to the initialized documents. The responces are
+	brought back to the client and the entire loop may begin again if the user
+	clicks on a link or submits a form.

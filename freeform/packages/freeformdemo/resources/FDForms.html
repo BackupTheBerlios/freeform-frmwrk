@@ -1,0 +1,121 @@
+<html>
+  <h2>Forms Demo</h2>
+  Freeform Framework greatly simplifies form handling. It uses special <tt>Form</tt> class to
+  abstract the input form, its fields and processing action. The form fields are special classes
+  that can validate themselves. Besides, the HTML package will automatically display warning
+  messages for you if the form has been filled with mistakes, and will take care of setting
+  the field values - so that the page designers will not have to worry about the action attribute
+  of the form and about inserting the field values manually. The encapsulation of an input
+  form into a separate class gives you the power of having multiple forms on the same page
+  as well as having same form on multiple pages. Page designer can even create a separate
+  template for the form and include it on every page that will have that form!<br/><br/>
+  
+  <!-- If the form is correctly displayed, we will show a message only -->
+  <HTMLIfSet key="success">
+    <div style="width: 100%; border-color: green; border-style: solid; background-color: WhiteSmoke">
+    <b>Thank you!</b><br/><br/>
+    You have successfully filled the form. Please note that this page was generated with the same 
+    action that the form. You can now go <HTMLLink action="FDForms">back</HTMLLink>. </div>
+  </HTMLIfSet>
+  
+  <!-- This tag will prevent the display of the form if it was correctly filled -->
+  <HTMLIfNotSet key="success">
+  Here is a sample form:<br/><br/>
+  
+  <!-- This tag opens the form, writes correct action and method attribute and extracts field
+       objects into the template variables -->
+  <HTMLShowForm key="form">
+    
+    <!-- This tag will enable display of the contained fragment if the form was filled 
+         incorrectly -->
+    <HTMLIfInputFieldErrors key="form">
+    <div style="width: 100%; border-color: red; border-style: solid; background-color: WhiteSmoke">
+    <b>One or more errors occured:</b>
+    <ul>
+      <!-- These tags trigger display of the contained fragment if the corresponding field was 
+           filled incorrectly -->
+      <HTMLIfInputFieldError key="text1">
+        <li>You entered your name incorrectly</li>
+      </HTMLIfInputFieldError>
+      <HTMLIfInputFieldError key="pass1">
+        <li>You entered card number incorrectly</li>
+      </HTMLIfInputFieldError>
+      <HTMLIfInputFieldError key="payment">
+        <li>You entered card type incorrectly</li>
+      </HTMLIfInputFieldError>
+    </ul>
+    Please correct these errors</div><br/><br/>
+    </HTMLIfInputFieldErrors>
+    
+    <table cellpadding="0" cellspacing="4" style="border-style: solid; background-color: WhiteSmoke; border-color: Grey">
+      <tr>
+        <td valign="top">
+          Please enter your first and last name:
+        </td>
+        <td>
+          <!-- This tag displays input field. As you can see, you do not have to specify
+               the value, or even the type. However, you can specify additional attributes
+               for style or scripting -->
+          <HTMLInput name="text1" size="25"/><br/>
+          <small>Please enter two words separated by a space, how they appear on your card</small>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          Please enter your credit card number:
+        </td>
+        <td>      
+          <HTMLInput name="pass1" size="25"/><br/>
+          <small>Please enter 16 digits only, no spaces</small>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          Please enter your comments/suggestions:
+        </td>
+        <td>      
+          <HTMLInput name="text2" rows="8" cols="25"/><br/>
+          <small>You can leave this blank</small>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Please select type of your card: 
+        </td>
+        <td>
+          <!-- For radio buttons, the framework will take care of correct values also. -->
+          <HTMLInput name="payment"/>Visa <HTMLInput name="payment"/>Master
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Please check if you want us to remember your details: 
+        </td>
+        <td>
+          <HTMLInput name="check1"/>Yes
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <input type="submit" value=" Go "/><br/>
+          <small><b>Please note this form will NOT process any payment, it is just a demo</b></small>
+        </td>
+      </tr>
+    </table>
+  </HTMLShowForm><br/>
+  
+  You can test the form by trying to enter bad values: first try to enter all values incorrectly,
+  then enter one field correctly and so on. You will see the form save correct input (try switching
+  the radio buttons and checking the box between incorrect submissions). Also note that the
+  list of errors will also change. Please use the 'View Source' and 'View Template' links above
+  to see how easy to make the template and to build the form.<br/><br/>
+  
+  In general, you will need to construct a <tt>Form</tt> object, add fields to it and display it.
+  You dipslay a form very much like you did with simple HTML forms, but replacing the 
+  <tt>form</tt> and <tt>input</tt> tags with their <tt>HTMLShowForm</tt> and <tt>HTMLInput</tt>
+  counterparts. The <tt>HTMLIfInputFieldErrors</tt> and <tt>HTMLIfInputFieldError</tt> tags
+  are conditional tags that will display their contents only if form fields were incorrectly
+  filled.
+  </HTMLIfNotSet>
+</html>

@@ -1,0 +1,73 @@
+<b>Using the HTML package</b>
+
+The main goal of the package is to generate HTML/XML responce documents. The main class, 
+<class>HTMLDocument</class>, is an implementation of the <class>Document</class> interface, and most
+of the time you will be dealing with it.
+
+Every action you develop while using the HTML package will create an instance of the 
+<class>HTMLDocument</class> and return in to the <class>Responce</class> object:
+
+<source>
+  class MyAction extends Action {
+    function process() {
+      $d = new HTMLDocument($this->getResponce());
+      ...
+      $this->getResponce()->setDocument($d);
+    }
+  }
+</source>
+
+The example above won't do much, however, as we didn't specify the template to process. This is done
+by calling the <method>HTMLDocument::setTemplate</method> that takes the absolute file name of the 
+template file as its single argument. While you can choose arbitrary locations of your templates, it 
+is recommended that you keep them in the <tt>resources</tt> subdirectory of the package your action
+belongs to. By so doing, you will be able to easily locate template files via the 
+<method>Package::getResourcePath</method>:
+
+<source>
+  class MyAction extends Action {
+    function process() {
+      $d = new HTMLDocument($this->getResponce());
+      $d->setTemplate($this->getPackage()->getResourcePath('MyAction.html'));
+      ...
+      $this->getResponce()->setDocument($d);
+    }
+  }
+</source>
+
+This will look for the <tt>MyAction.html</tt> file in the <tt>resources</tt> subdirectory of
+the package where <tt>MyAction</tt> belongs.
+
+For the HTMLDocument generation of DOCTYPE declarations is supported. By default, every produced
+document will flag itself as HTML version 4.01 Transitional, however, it is your task to ensure
+the validity of the template. All the standard custom tags do not expose themselves in the resulting
+documents, they just control the display of different tags, so its your job to check if your
+markup is valid and confirms to the DOCTYPE specification.
+
+You can change the DOCTYPE by altering the <tt>.config</tt> file of the HTML package. There are just
+two options:
+
+<tt>html.version</tt> - the version to include in the DOCTYPE<br/>
+<tt>html.type</tt> - the type, either transitional or strict.
+
+These settings affect the whole installation of Freeform Framework and every document you produce,
+so you should try to make every template valid. While this is not crucial for browsers (they
+easily display non-valid documents), HTML validators will flag the pages as not valid if you don't.
+
+Please note that still every template must be a well-formed and readable XML file. You will end 
+up with an exception if you specify path to inexistent file or the file contains bad-formed XML.
+
+This package also supports custom tags - special classes that extend the <class>HTMLTag</class>.
+The purpose of these tags is to repeat or conditionally display their content, define regions or
+include other files. You use them like ordinary tags, specifying input parameters via tag's
+attributes:
+
+<html>
+  ...
+  <HTMLShowIterable key="products">
+    Title: {%title}, price: {%price}<br/>
+  </HTMLShowIterable>
+  ...
+</html>
+
+Such mix of regular HTML tags and special tags allows for easy viewing/editing with many XML tools.

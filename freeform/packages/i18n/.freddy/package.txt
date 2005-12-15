@@ -1,0 +1,8 @@
+/**
+This core package of the Freeform framework deals with internationalization of your web 
+applications. Using this package you do not depend on different, often incomplete and
+non-cross-platform locale setups on different servers and operating systems for PHP5.
+@see <doc file="i18n.txt">Internationalization, Freeform way</doc> to better understand the tools you are empowered with by using this package  
+@since 1.2.0.Alpha
+@author Dennis Popel
+*/

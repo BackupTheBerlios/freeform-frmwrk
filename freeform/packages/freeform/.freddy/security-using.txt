@@ -1,0 +1,163 @@
+<b>Applying Security Policies</b>
+
+In Freeform request for every <class>Action</class> is checked whether the action
+can be executed in current environment. Upon request, a call to 
+<method>Action::getAccessController</method> is made. This method should return
+an instance of <class>AccessController</class>-implementing class. If the return
+value is not null, its <method>AccessController::isAccessible</method> is called.
+This is where the security policy is applied. 
+
+In general, when you build your application with Freeform, you also develop a set
+of classes that implement the <class>AccessController</class> interface. These 
+classes can be reused by different actions. For simple applications or simple actions
+you will implement this interface by the action class itself.
+
+Let's consider the following example. Suppose we will have two actions, first of which
+will ask you to enter PIN code that will be stored in session and redirect to another action.
+The second action will check the presence of the PIN code in the session; if it is present,
+the action will allow access to it.
+
+<tt>Source for MyLoginAction.php5</tt>
+
+<source>
+// This action will display the login form
+class MyLoginAction extends Action {
+  private $form = null;
+  
+  // Here we will create the form
+  function onInit() {
+    $this->form = new Form($this->getRequest(), new Location($this));
+    // Create the password field, the validator will require you
+    // to enter 5 digits
+    $this->form->addField('PIN', 
+      new TextInputField('', 
+        new RegexValidator('^[[:digit:]]{5}$'),
+        TextInputField::PASSWORD));
+  }
+  
+  function process() {
+    // Create the responce document
+    $d = new HTMLDocument($this->getResponce());
+    // Set the template
+    $d->setTemplate($this->getPackage()->getResourcePath('MyLoginAction.html'));
+    // Pass the document the form so it can be displayed
+    $d->setVariable('form', $this->form);
+    
+    // Now see if the form is valid submission
+    if($this->form->isValidSubmission()) {
+      // If so, check if the code is correct
+      $fld = $this->form->getField('PIN');
+      if($fld->getValue() == '12345') {
+        // PIN correct, set the session variable and goto the second action
+        Session::setVariable('PINCorrect', true);
+        $this->getResponce()->relocate(new Location('MySecureAction'));
+      } else {
+        // PIN incorrect, reset the PIN field and redisplay the form
+        $fld->setValue(null);
+        // Also set special template variable to true so that we display extra warning
+        $d->setVariable('badPIN', true);
+      }
+    }
+    $this->getResponce()->setDocument($d);
+  }
+}
+</source>
+
+<tt>Template file MyLoginAction.html</tt>
+
+<html>
+&lt;html>
+  <head>
+    <title>
+      Please Login
+    </title>
+  </head>
+  <body>
+    <HTMLIfSet key="badPIN">
+      <p style="color: red">
+        You supplied incorrect PIN code<br/>
+      </p>
+    </HTMLIfSet>
+    <HTMLShowForm key="form">
+      <HTMLIfInputFieldError key="PIN">
+        <p style="color: red">
+          Please enter 5 digits<br/>
+        </p>
+      </HTMLIfInputFieldError>
+      Please enter PIN code: <HTMLInput name="PIN"/> <input type="submit" value=" Go "/>
+    </HTMLShowForm>
+    <HTMLLink action="MySecureAction">Click here to see what happens if you access the secure
+    action without entering correct PIN code</HTMLLink>
+  </body>
+&lt;/html>
+</html>
+
+<tt>Source for MySecureAction.php5</tt>
+
+<source>
+// This action will display 'secure' information. Note that it implements
+// the AccessController interface and returns itself in the call to
+// getAccessController 
+class MySecureAction extends Action implements AccessController {
+  function getAccessController() {
+    return $this;
+  }  
+  
+  // This method is declared in the AccessController interface. It should return
+  // true if the session cintains a special variable, PINCorrect
+  function isAccessible() {
+    return Session::getVariable('PINCorrect') == true;
+  }
+  
+  // Now this method will be called if the security check was successful
+  function process() {
+    // Create the responce document
+    $d = new HTMLDocument($this->getResponce());
+    // Set the template
+    $d->setTemplate($this->getPackage()->getResourcePath('MySecureAction.html'));
+    $this->getResponce()->setDocument($d);
+  }
+  
+  // And this will be called if the access is denied
+  function onAccessDenied() {
+    // Create the responce document
+    $d = new HTMLDocument($this->getResponce());
+    // Set the template
+    $d->setTemplate($this->getPackage()->getResourcePath('MySecureActionAccessError.html'));
+    $this->getResponce()->setDocument($d);
+  }
+}
+</source>
+
+<tt>Template file MySecureAction.html</tt>
+
+<html>
+&lt;html>
+  <head>
+    <title>
+      Secure Page
+    </title>
+  </head>
+  <body>
+    This is very secure page
+  </body>
+&lt;/html>
+</html>
+
+<tt>Template file MySecureActionAccessError.html</tt>
+
+<html>
+&lt;html>
+  <head>
+    <title>
+      Secure Page
+    </title>
+  </head>
+  <body style="color: red">
+    You cannot access this page
+  </body>
+&lt;/html>
+</html>
+
+You can try to click the link on the login page to bypass the PIN code. However, the
+secure action will detect such action and display a warning message.

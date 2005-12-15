@@ -1,0 +1,16 @@
+<html>
+  <h2>Processing Instructions Demo</h2>
+  Since version 1.1.1 Freeform framework allows you to embed PHP code into the templates.
+  The code is executed every time the document processor reaches it; the code has read only
+  access to the template variables so that it can use them. The code should output valid
+  markup with the help of the echo or print statements; you cannot mix markup and PHP code in 
+  a single instruction.<br/><br/>
+  This demo takes a list of names and uses PHP code in the template to reverse them:<br/><br/>
+  
+  <?php
+    while($values->hasMore()) {
+      $v = $values->getNext();
+      echo $v, ' : ', strrev($v), "<br/>\r\n";
+    }
+  ?>
+</html>

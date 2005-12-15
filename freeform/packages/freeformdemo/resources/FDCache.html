@@ -1,0 +1,17 @@
+<html>
+  <h2>Caching Demo</h2>
+  Since version 1.2.0 Freeform framework supports powerful caching API that lets you to
+  easily control the caches of the prowser as well as on the server. This page contains the
+  time of its creation; the page's life time is set to 10 seconds. Clicking on the link to refresh the page (below) will NOT cause the reload of this page from the server; you will notice that the time
+  will not change. Also, if you have enabled server-side caching, you can open another 
+  browser and load the same URL (copy and paste it) - you will see that the page contains the
+  same generation time.<br/><br/>
+  Also the HTML package supports the parser cache - the parsed templates are stored on the
+  server and quickly unserialized on subsequent requests to the same template file. 
+  This cache is fully automatic - you have only to enable it in the configuration of the
+  HTML package. The cache will detect any changes you made to the template files and 
+  refresh itself as needed.<br/><br/>
+  
+  <b>This page was generated on <HTMLDateTime key="time"/></b><br/>
+  Click <HTMLLink action="FDCache">here</HTMLLink> to reload this page.<br/><br/>
+</html>

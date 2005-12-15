@@ -1,0 +1,87 @@
+<b>
+Class and Resource Packaging, Automatic Class Discovery and Loading, 
+Service Provider Interface
+</b>
+
+Freeform framework enforces the use of packages to distribute and organize 
+classes in web application. Any web application is a collection of packages
+installed on the web server. A package effectively is a directory under
+Freeform home installation directory. The Freeform loader scans package 
+directory and loads required class files so that you do not need to explicitly 
+include them from these class files. 
+
+Another feature of packages is the possibility to distribute package resources. 
+  A package resource may be any data that is needed by package - for example, 
+  pictures, document templates etc. For example, an application may want to hide 
+  the templates it uses to produce pages from users moving them into package and 
+  installing Freeform outside web accessible directory istead of web document root. 
+  A package provides a convenient way to load these resources into application 
+  taking care of paths - you can safely move your Freeform installation around 
+  your web server hard drive without the need to change paths. This also applies 
+  to uploading the application from development server to production server - 
+  no change of paths will be required.
+
+  Packages also provide a way for storing configuration information for a package. 
+  If there is a file called .config in the package directory, it will be treated 
+  as a configuration file for that package. Package API provides a way of 
+  accessing that configuration information. You may wish to store such things as 
+  SQL database server login information etc. A configuration file is a standard 
+  ini file of property=value pairs. You then access these configuration
+  properties with methods of the Package class.
+
+  The Package API provides a way of getting the <class>Package</class> object for a class or by 
+  name so that each class has access to package it has been declared in.
+
+  Please note that packaging is a way of emulating native namespace support that 
+  has been removed from PHP5. However, it extends namespaces to contain resources 
+  and configuration information. On the other hand, absence of language-level 
+  namespaces requires that each class name be unique, which would not be the case 
+  if they were present: for eaxmple, having two packages, 'a' and 'b', it would be 
+  possible to declare classes a.x and b.x. Without native namespaces you will have 
+  to choose class names that way that will make them unique. The proposed way is 
+  to add package name or its abbreviation before the actual class name - like 
+  HTMLDocument from the 'html' package or 'SQLConstraint' from 'sql' package. The 
+  only package that doesn't follow this convention is the 'freeform' package where 
+  all core classes and interfaces are kept - like Form or Document.
+
+  Package names must consist of characters that are valid for file names. It is 
+  proposed that they contain lowercase letters and dots - like 'freeform' or 
+  'dev6.php5.nedlinux.com' (the latter clearly represents the application driving 
+  the dev6.php5.nedlinux.com site).
+
+  The resources reside in the 'resources' subdirectory of the package directory. 
+  A class may access the package resources by calling Package's getResourcePath() 
+  method.
+
+In order for the automatic class loading to work, you must follow the class 
+file naming rules. They are as follows:
+<ul>
+<li>the classes must be declared in separate files;
+</li>	
+<li>class files must be named after the name of the class, matching the case; 
+</li>
+<li>class files must have the '.php5' extension.
+</li>
+</ul>
+So, a class named MyAction must be declared in the 'MyAction.php5' file stored
+in the directory with the rest of package class files. You may still declare
+other classes in the same file if and only if such classes will be used by
+the class that the file is named after. (You may think of them as of 
+nested classes).
+
+Class files should not contain any statements that output anything or otherwise 
+get executed at the time of inclusion. Any output will be captured and flushed 
+to the error log. Simply speaking, they should contain the class definition
+only. It is strongly recommended to use class constants instead of global
+scope constants.
+
+Service Provider Interface allows informing the framework which classes are
+implementing some API. Since the framework does not load all classes at startup
+but only when thay are directly requested by the <tt>new</tt> construct or
+via reflection, there may be situations when this mechanism will not be able
+to present all classes that, for example, are Actions, when the application
+wants to build the list of all possible Actions. To overcome this, you can 
+explicitly state which classes to load on each request regardless of whether
+thay will be needed or not. You do so by creating a special '.spi' file in
+the package directory that consists of class names to be automatically loaded
+(one class name per line). 
