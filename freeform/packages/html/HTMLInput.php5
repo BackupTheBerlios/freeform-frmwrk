@@ -33,7 +33,7 @@ class HTMLInput extends HTMLTag {
       if($fld->getValue()) {
         $this->setAttribute('checked', 'true');
       }
-      $t = new HTMLTag($this, '', 'input', array());
+      $t = new HTMLTag($this, 'input', array());
       $t->setAttribute('value', '');
       $t->setAttribute('type', 'hidden');
       $t->setAttribute('name', $key);
@@ -43,14 +43,14 @@ class HTMLInput extends HTMLTag {
       $this->setAttribute('size', '1');
       
       if($e = $fld->getEmpty()) {
-        $t = new HTMLTag($this, '', 'option', array());
+        $t = new HTMLTag($this, 'option', array());
         $t->setAttribute('value', '');
         $t->addNode($tn = new HTMLTextNode($this, $e));
         $this->addNode($t);
       }
         
       foreach($fld->getData() as $k=>$v) {
-        $t = new HTMLTag($this, '', 'option', array());
+        $t = new HTMLTag($this, 'option', array());
         $t->setAttribute('value', $k);
         if($fld->getValue() == $k) {
           $t->setAttribute('selected', 'true');

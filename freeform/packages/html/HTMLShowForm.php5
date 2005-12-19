@@ -51,7 +51,7 @@ class HTMLShowForm extends HTMLTag {
       return self::SKIP_BODY;
     }
     
-    $this->parameters = new HTMLTag($this, '', 'div', array());
+    $this->parameters = new HTMLTag($this, 'div', array());
     $this->parameters->setExposed(false);
     
     if($this->ifError = $this->getTagByName('iferror')) {
@@ -64,9 +64,9 @@ class HTMLShowForm extends HTMLTag {
     if($this->wml) {
       $this->setName('fieldset');
       $this->action->name = 'postfield';
-      $do = new HTMLTag($this, '', 'do', array());
+      $do = new HTMLTag($this, 'do', array());
       $do->setAttribute('type', 'Accept');
-      $go = new HTMLTag($this, '', 'go', array());
+      $go = new HTMLTag($this, 'go', array());
       $go->setAttribute('href', '?');
       $go->setAttribute('method', $this->form->getMethod() == Request::METHOD_POST ? 'post' : 'get');
       $go->addNode($this->parameters);
@@ -75,17 +75,17 @@ class HTMLShowForm extends HTMLTag {
     } else {
       $this->setAttribute('method', $this->form->getMethod() == Request::METHOD_POST ? 'post' : 'get');
       if($this->getAttribute('method') == 'post') {
-			  $this->setAttribute('enctype', 'multipart/form-data');
-			}
+	       $this->setAttribute('enctype', 'multipart/form-data');
+      }
       $this->setName('form');
-		  $this->setAttribute('action', Request::$URL); 
-		  // Set the HTML4.01 attribute accept-encoding if we generate 4.01 HTML pages
-		  // !!! Must use version_compare !!!
-		  if(Package::getPackage($this)->getProperty('html.version') == '4.01') {
-		    $this->setAttribute('accept-charset', 'UTF-8');
-		  }
-		  $this->addNode($this->parameters);
-		}
+      $this->setAttribute('action', Request::$URL); 
+      // Set the HTML4.01 attribute accept-encoding if we generate 4.01 HTML pages
+      // !!! Must use version_compare !!!
+      if(Package::getPackage($this)->getProperty('html.version') == '4.01') {
+        $this->setAttribute('accept-charset', 'UTF-8');
+      }
+      $this->addNode($this->parameters);
+    }
 		
     // Pass over parameters
     $pars = $this->form->getParameters();
@@ -98,7 +98,7 @@ class HTMLShowForm extends HTMLTag {
     
     $pars['action'] = $this->form->getLocation()->getAction();
     foreach($pars as $k=>$v) {
-      $a = new HTMLTag($this, '', $this->wml ? 'postfield' : 'input', array());
+      $a = new HTMLTag($this, $this->wml ? 'postfield' : 'input', array());
       $a->setAttribute('name', $k);
       $a->setAttribute('value', htmlSpecialChars($v));
         
