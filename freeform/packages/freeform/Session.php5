@@ -85,7 +85,7 @@ final class Session {
    * expired.
    * @param  string $hash  a unique hash for the private mode or null
    */
-  function setPrivateMode($hash) {
+  static function setPrivateMode($hash) {
     self::$sessionImpl->setPrivateMode($hash);
   }
   
@@ -93,7 +93,7 @@ final class Session {
    * Return the private mode hash if any
    * @return  string  the private mode hash or null
    */
-  function getPrivateMode() {
+  static function getPrivateMode() {
     return self::$sessionImpl->getPrivateMode();
   }
 }
