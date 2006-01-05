@@ -5,7 +5,7 @@
  * and return instances of this interface in calls to getUser() and setUser().
  *
  * Freeform framework allows developers create their own or incorporate existing
- * user management systems - this is the main reason why this interface exists.
+ * user management systems - this is the main reason why this interface and the <class>UserManager</class> class exist.
  * It declares the general contract of quering particular user details,
  * such as the user name, role and possible other properties (via the call to
  * <method>User::getProperty</method>() method).
@@ -21,8 +21,8 @@
  * <class>PersistentUser</class> class to correctly serialize its instances into the
  * session).
  * 
- * The user name is the only property that cannot be modified after the user object has been
- * created. This property (accessed via the <method>User::getUserName</method>() method) is
+ * The user ID is the only property that cannot be modified after the user object has been
+ * created. This property (accessed via the <method>User::getID</method>() method) is
  * used as the unique user ID. 
  *
  * This interface also declares a method <method>User::isRole</method>, which should return true if the user matches a role.
@@ -36,10 +36,22 @@
  */ 
 interface User {
   /**
-   * Get the user name of this user. The user name is the user's unique ID.
+   * Get the user ID of this user. This ID must be unique and the underlying user management system must 
+   * guarantee that this ID will be ever changed for this particluar user.
    * @return  string  user name
+   * @see <method>User::getLogin</method>()
+   * @since 1.2.0.RC
    */
-  function getUserName();
+  function getID();
+  /**
+   * Get the login name of this user. The login name is the string of symbols that this user enters
+   * to login into the application. The underlying user management system must guarantee that there are
+   * no duplicate login names at the same time; however, this login name may change (unlike the user ID)
+   * @see <method>User::getID</method>()
+   * @return  string  login name
+   * @since 1.2.0.RC
+   */
+  function getLogin();
   
   /**
    * Check if the user has the specified role
@@ -62,7 +74,7 @@ interface User {
   /**
    * This method should return true if the user has logged in by the currently executing
    * action (i.e., is "logging in"). The implementations that do not support this
-   * may always return false.
+   * may always return true.
    *
    * The return value of this method is recommendative; it must not be relied on when
    * checking if the user is actually logged in.
