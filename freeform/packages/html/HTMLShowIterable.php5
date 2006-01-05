@@ -133,7 +133,7 @@ class HTMLShowIterable extends HTMLTag {
    */
   function onClose() {
     if($this->iterable instanceof Iterable) {
-      $this->iterable->rewind();
+      $this->iterable->reset();
     }
     parent::onClose();
   }

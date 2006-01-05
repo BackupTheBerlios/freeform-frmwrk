@@ -48,7 +48,7 @@ class IterablePDOResult implements PaginatedIterable {
     return $this->pos < count($this->data);
   }
   
-  function rewind() {
+  function reset() {
     $this->setPage($this->page);
   }
   

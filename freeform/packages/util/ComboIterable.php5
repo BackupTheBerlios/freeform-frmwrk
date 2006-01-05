@@ -108,9 +108,9 @@ class ComboIterable implements Iterable {
     return $rv;
   }
   
-  function rewind() {
+  function reset() {
     foreach($this->iters as $i) {
-      $i->rewind();
+      $i->reset();
     }
   }
 }

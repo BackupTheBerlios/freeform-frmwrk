@@ -27,9 +27,11 @@ interface Iterable {
    * Rewind this iterable to the before-the-first position. A call to the <method>Iterable::getNext</method>
    * will fetch the first item. Note that in PaginatedIterable this method will rewind to the
    * first item on the current page.
-   * @since 1.2.0.Alpha
+   * 
+   * Note: In order to avoid name collision method name has been changed. Previous name was "rewind"
+   * @since 1.2.0.Alpha   
    */
-  function rewind();
+  function reset();
 }
 
 ?>

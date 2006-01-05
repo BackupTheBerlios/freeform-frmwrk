@@ -70,7 +70,7 @@ class IterableArray implements Iterable {
    * Rewind this iterable array
    * @since 1.2.0.Alpha
    */
-  function rewind() {
+  function reset() {
     $this->position = 0;
   }
 }

@@ -103,7 +103,7 @@ class IterableADODBRecordSet implements PaginatedIterable {
     return $this->page;
   }
   
-  function rewind() {
+  function reset() {
     $this->pos = $this->getFirstRowNumber();
   }
 }
