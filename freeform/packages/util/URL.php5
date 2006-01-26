@@ -54,10 +54,10 @@ class URL {
   function __construct($location) {
 
     $this->location = $location;
-
-    // Regex the url into components
-    preg_match(self::$regexURL, $location, $matches = array());
-
+  
+    // Regex the url into components    
+    preg_match(self::$regexURL, $location, $matches );
+    
     $this->protocol   = (strLen(@$matches['proto']) > 0) ? strToLower(@$matches['proto']):null;
     $this->user       = (strLen(@$matches['user']) > 0) ? @$matches['user']:null;
     $this->password   = (strLen(@$matches['haspass']) > 0) ? @$matches['pass']:null;
@@ -72,7 +72,7 @@ class URL {
     // $this->path				= (strLen(@$matches['path']) > 1) ? str_replace('\\', '/', dirName(@$matches['path'])) . '/' : '';
     // $this->resource   = baseName(@$matches['path']);
 
-    preg_match('~(?P<ext>\.[^.]*)~',$this->resource,$extmatches = array());
+    preg_match('~(?P<ext>\.[^.]*)~',$this->resource,$extmatches);
     $this->extension  = @$extmatches['ext'];
 
     $this->ref	      = (strLen(@$matches['ref']) > 0) ? @$matches['ref']:null;
@@ -116,7 +116,7 @@ class URL {
     // The parsing is now straightforward:
     // See if we have an absolute URL, if so, return it.
     // Otherwise append or modify current path and copy over user, password and port.
-    if(ereg("://[^/?#]+", $newLocation, $m = array())) {
+    if(ereg("://[^/?#]+", $newLocation, $m )) {
       return new URL($newLocation);
     } else {
       if($newLocation[0] == "/")
