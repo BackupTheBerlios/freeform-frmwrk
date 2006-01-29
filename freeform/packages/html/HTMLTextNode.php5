@@ -46,7 +46,7 @@ class HTMLTextNode extends SDTextNode {
   
   /**
    * Return the content of this text node. Will return interpolated template 
-   * variables. Will escape special characters if in non-raw mode.
+   * variables if not in raw mode.
    * @return  string  content of this text node
    */
   function getContent() {

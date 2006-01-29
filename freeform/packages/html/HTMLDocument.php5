@@ -356,7 +356,8 @@ class HTMLDocument implements Document {
           if($root->isExposed()) {
             $this->body .= ('<' . $root->getName());
             foreach($root->getAttributes() as $k=>$v) {
-              $this->body .= (' ' . $k . '="' . htmlSpecialChars($v, ENT_QUOTES, 'UTF-8') . '"');
+              // $this->body .= (' ' . $k . '="' . htmlSpecialChars($v, ENT_QUOTES, 'UTF-8') . '"');
+              $this->body .= (' ' . $k . '="' . $v . '"');
             }
             $this->body .= ('>');
           }
@@ -375,7 +376,8 @@ class HTMLDocument implements Document {
           if($root->isExposed()) {
             $this->body .= ('<' . $root->getName());
             foreach($root->getAttributes() as $k=>$v) {
-              $this->body .= (' ' . $k . '="' . htmlSpecialChars($v, ENT_QUOTES, 'UTF-8') . '"');
+              // $this->body .= (' ' . $k . '="' . htmlSpecialChars($v, ENT_QUOTES, 'UTF-8') . '"');
+              $this->body .= (' ' . $k . '="' . $v . '"');
             }
             $this->body .= (' />');
           }
@@ -385,9 +387,6 @@ class HTMLDocument implements Document {
       unSet($this->stack[$this->stackPosition--]);      
     } elseif($root instanceof HTMLTextNode) {
       $c = $root->getContent();
-      if($root->getRaw()) {
-        $c = htmlSpecialChars($c, ENT_QUOTES, 'UTF-8');
-      }
       $this->body .= $c;
     } elseif($root instanceof HTMLPINode) {
       ob_start();
@@ -412,21 +411,22 @@ class HTMLDocument implements Document {
     $rv = preg_replace_callback('|{@%([[:alnum:]_\.]+)}|mu', array($this, 'translateByRef'), $x);
     $rv = preg_replace_callback('|{%([[:alnum:]_\.]+)}|mu', array($this, 'expandVariable'), $rv);
     $rv = preg_replace_callback('|{@([[:alnum:]_\.]+)}|mu', array($this, 'translateMessage'), $rv);
+    // return htmlSpecialChars($rv, ENT_QUOTES, 'UTF-8');
     return $rv;
   }
   
   // These are used internally by the expandVars method.
   private function expandVariable($id) {
-    return $this->getVariable($id[1]);
+    return htmlSpecialChars($this->getVariable($id[1]), ENT_QUOTES, 'UTF-8');
   }
   
   private function translateMessage($id) {
-    return $this->getMessage($id[1]);
+    return htmlSpecialChars($this->getMessage($id[1]), ENT_QUOTES, 'UTF-8');
   }
   
   private function translateByRef($name) {
     $value = $this->getVariable($name[1]);
-    return $this->getMessage($value);
+    return htmlSpecialChars($this->getMessage($value), ENT_QUOTES, 'UTF-8');
   }
 }
 
