@@ -356,7 +356,7 @@ class HTMLDocument implements Document {
           if($root->isExposed()) {
             $this->body .= ('<' . $root->getName());
             foreach($root->getAttributes() as $k=>$v) {
-              $this->body .= (' ' . $k . '="' . htmlSpecialChars($v) . '"');
+              $this->body .= (' ' . $k . '="' . htmlSpecialChars($v, ENT_QUOTES, 'UTF-8') . '"');
             }
             $this->body .= ('>');
           }
@@ -375,7 +375,7 @@ class HTMLDocument implements Document {
           if($root->isExposed()) {
             $this->body .= ('<' . $root->getName());
             foreach($root->getAttributes() as $k=>$v) {
-              $this->body .= (' ' . $k . '="' . htmlSpecialChars($v) . '"');
+              $this->body .= (' ' . $k . '="' . htmlSpecialChars($v, ENT_QUOTES, 'UTF-8') . '"');
             }
             $this->body .= (' />');
           }
@@ -384,7 +384,11 @@ class HTMLDocument implements Document {
       }
       unSet($this->stack[$this->stackPosition--]);      
     } elseif($root instanceof HTMLTextNode) {
-      $this->body .= $root->getContent();
+      $c = $root->getContent();
+      if($root->getRaw()) {
+        $c = htmlSpecialChars($c, ENT_QUOTES, 'UTF-8');
+      }
+      $this->body .= $c;
     } elseif($root instanceof HTMLPINode) {
       ob_start();
       // see PHP bug 21909
@@ -413,16 +417,16 @@ class HTMLDocument implements Document {
   
   // These are used internally by the expandVars method.
   private function expandVariable($id) {
-    return htmlSpecialChars($this->getVariable($id[1]), ENT_QUOTES, 'UTF-8');
+    return $this->getVariable($id[1]);
   }
   
   private function translateMessage($id) {
-    return htmlSpecialChars($this->getMessage($id[1]), ENT_QUOTES, 'UTF-8');
+    return $this->getMessage($id[1]);
   }
   
   private function translateByRef($name) {
     $value = $this->getVariable($name[1]);
-    return htmlspecialchars($this->getMessage($value), ENT_QUOTES, 'UTF-8');
+    return $this->getMessage($value);
   }
 }
 

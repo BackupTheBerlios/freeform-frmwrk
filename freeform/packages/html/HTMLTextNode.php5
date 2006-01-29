@@ -37,6 +37,14 @@ class HTMLTextNode extends SDTextNode {
   }
   
   /**
+   * Return the raw mode flag for this text node
+   * @return  bool  the raw mode flag
+   */
+  function getRaw() {
+    return $this->raw;
+  }
+  
+  /**
    * Return the content of this text node. Will return interpolated template 
    * variables. Will escape special characters if in non-raw mode.
    * @return  string  content of this text node
@@ -50,43 +58,6 @@ class HTMLTextNode extends SDTextNode {
       }
     }
   }
-  /*
-      $rv = preg_replace_callback('|{@%([[:alnum:]_\.]+)}|mu', array($this, 'translateByRef'), parent::getContent());
-      $rv = preg_replace_callback('|{%([[:alnum:]_\.]+)}|mu', array($this, 'escapeVariable'), $rv);
-      $rv = preg_replace_callback('|{@([[:alnum:]_\.]+)}|mu', array($this, 'translateMessage'), $rv);
-      return $rv;
-    }
-  }
-
-  private function escapeVariable($name) {
-    return htmlSpecialChars((string)$this->getVariable($name), ENT_QUOTES, 'UTF-8');
-  }
-
-  private function getVariable($name) {
-    if($p = $this->getParent()) {
-      return $p->getDocument()->getVariable($name);
-    } else {
-      return null;
-    }
-  }
-  
-  private function translateMessage($id) {
-    if($p = $this->getParent()) {
-      return $p->getDocument()->getMessage($id[1]);
-    } else {
-      return null;
-    }
-  }
-  
-  private function translateByRef($name) {
-    if($p = $this->getParent()) {
-      $value = $this->getVariable($name[1]);
-      return $p->getDocument()->getMessage($value);
-    } else {
-      return null;
-    }
-  }
-  */
 }
 
 ?>
