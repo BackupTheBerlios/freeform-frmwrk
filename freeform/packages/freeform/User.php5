@@ -82,6 +82,29 @@ interface User {
    * @since 1.2.0.Beta
    */
   function isLoggingIn();
+  
+  /**
+   * Assign a role to the user. Implementations that do not support roles may ignore calls to this method
+   * @param  string  the role
+   * @return  bool  true on success, false on failure
+   * @since 1.2.0.RC
+   */
+  function assignRole($role);
+  
+  /**
+   * Revoke a role form the user. Implementations that do not support roles may ignore calls to this method
+   * @param  string  the role
+   * @return  bool  true on success, false on failure
+   * @since 1.2.0.RC
+   */
+  function revokeRole($role); 
+  
+  /**
+   * Return all the roles of this user. Implementations that do not support roles must return empty arrays
+   * @return  array  the list of roles
+   * @since 1.2.0.RC
+   */
+  function getRoles();
 }
 
 ?>
