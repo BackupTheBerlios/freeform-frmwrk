@@ -45,7 +45,7 @@ class HTMLLink extends HTMLTag {
     
     $l = $this->getLocation();
     if(!is_null($l)) {
-      $this->setAttribute('href', $l->toURL());
+      $this->setAttribute('href', htmlSpecialChars($l->toURL(), ENT_QUOTES, 'UTF-8'));
       return self::PROCESS_BODY;
     } else {
       return self::SKIP_BODY;

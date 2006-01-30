@@ -78,7 +78,7 @@ class HTMLShowForm extends HTMLTag {
 	       $this->setAttribute('enctype', 'multipart/form-data');
       }
       $this->setName('form');
-      $this->setAttribute('action', Request::$URL); 
+      $this->setAttribute('action', htmlSpecialChars(Request::$URL, ENT_QUOTES, 'UTF-8')); 
       // Set the HTML4.01 attribute accept-encoding if we generate 4.01 HTML pages
       // !!! Must use version_compare !!!
       if(Package::getPackage($this)->getProperty('html.version') == '4.01') {
@@ -99,8 +99,8 @@ class HTMLShowForm extends HTMLTag {
     $pars['action'] = $this->form->getLocation()->getAction();
     foreach($pars as $k=>$v) {
       $a = new HTMLTag($this, $this->wml ? 'postfield' : 'input', array());
-      $a->setAttribute('name', $k);
-      $a->setAttribute('value', htmlSpecialChars($v));
+      $a->setAttribute('name', htmlSpecialChars($k, ENT_QUOTES, 'UTF-8'));
+      $a->setAttribute('value', htmlSpecialChars($v, ENT_QUOTES, 'UTF-8'));
         
       if(!$this->wml) {
         $a->setAttribute('type', 'hidden');

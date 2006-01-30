@@ -15,7 +15,6 @@ class HTMLIfUser extends HTMLTag {
   function onOpen() {
     $role = $this->getAttribute('role');
     if($u = Session::getUser()) {
-      $this->getDocument()->setVariable('userName', $u->getUserName());
       if($role) {
         return $u->isRole($role) ? HTMLTag::PROCESS_BODY : HTMLTag::SKIP_BODY;
       } else {

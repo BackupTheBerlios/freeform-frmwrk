@@ -22,10 +22,11 @@ class HTMLInput extends HTMLTag {
     if($fld instanceof TextInputField) {
       if($fld->getType() == TextInputField::TEXTAREA) {
         $this->setName('textarea');
-        $this->addNode(new HTMLTextNode($this, $fld->getValue()));
+        $this->addNode(new HTMLTextNode($this, htmlSpecialChars($fld->getValue(), ENT_QUOTES, 'UTF-8')));
       } else {
         $this->setAttribute('type', $fld->getType() == TextInputField::TEXT ? 'text' : 'password');
-        $this->setAttribute('value', htmlSpecialChars($fld->getValue()));
+        $this->setAttribute('value', htmlSpecialChars($fld->getValue(), ENT_QUOTES, 'UTF-8'));
+        // $this->setAttribute('value', $fld->getValue());
       }
     } elseif($fld instanceof CheckBoxInputField) {
       $this->setAttribute('type', 'checkbox');
@@ -45,13 +46,13 @@ class HTMLInput extends HTMLTag {
       if($e = $fld->getEmpty()) {
         $t = new HTMLTag($this, 'option', array());
         $t->setAttribute('value', '');
-        $t->addNode($tn = new HTMLTextNode($this, $e));
+        $t->addNode($tn = new HTMLTextNode($this, htmlSpecialChars($e, ENT_QUOTES, 'UTF-8')));
         $this->addNode($t);
       }
         
       foreach($fld->getData() as $k=>$v) {
         $t = new HTMLTag($this, 'option', array());
-        $t->setAttribute('value', $k);
+        $t->setAttribute('value', htmlSpecialChars($k, ENT_QUOTES, 'UTF-8'));
         if($fld->getValue() == $k) {
           $t->setAttribute('selected', 'true');
         }
@@ -62,7 +63,7 @@ class HTMLInput extends HTMLTag {
       $this->setAttribute('type', 'file');
     } elseif($fld instanceof RadioButtonInputField) {
       $this->setAttribute('type', 'radio');
-      $this->setAttribute('value', $v = $fld->getNextValue());
+      $this->setAttribute('value', htmlSpecialChars($v = $fld->getNextValue(), ENT_QUOTES, 'UTF-8'));
       if($v == $fld->getValue()) {
         $this->setAttribute('checked', 'true');
       }

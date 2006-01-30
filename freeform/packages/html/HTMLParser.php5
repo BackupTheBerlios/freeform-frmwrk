@@ -81,7 +81,7 @@ class HTMLParser extends SDParser {
   function onCData($parent, $data) {
     if($this->lastTextNode) {
       $this->lastTextNode->setContent(
-			  $this->lastTextNode->getUnparsedContent() . $data);
+        $this->lastTextNode->getUnparsedContent() . $data);
     } else {
       $this->lastTextNode = new HTMLTextNode($parent, $data);
       return $this->lastTextNode;

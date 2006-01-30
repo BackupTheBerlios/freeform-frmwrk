@@ -30,7 +30,7 @@ class HTMLImage extends HTMLTag {
   
   function onOpen() {
     if($this->key || $this->key = $this->removeAttribute('key')) {
-      $this->setAttribute('src', $this->getDocument()->getVariable($this->key)->toURL());
+      $this->setAttribute('src', htmlSpecialChars($this->getDocument()->getVariable($this->key)->toURL(), ENT_QUOTES, 'UTF-8'));
       return self::PROCESS_BODY;
     } elseif($this->name || $this->name = $this->removeAttribute('name')) {
       if($this->package || $this->package = $this->removeAttribute('package')) {
@@ -41,9 +41,9 @@ class HTMLImage extends HTMLTag {
       }
       if($p) {
         $l = new Location('HTMLShowImage', array('package'=>$p, 'name'=>$this->name));
-        $this->setAttribute('src', $l->toURL());
+        $this->setAttribute('src', htmlSpecialChars($l->toURL(), ENT_QUOTES, 'UTF-8'));
         if($this->alt || $this->alt = !$this->getAttribute('alt')) {
-          $this->setAttribute('alt', $this->name);
+          $this->setAttribute('alt', htmlSpecialChars($this->name, ENT_QUOTES, 'UTF-8'));
         }
         return self::PROCESS_BODY;
       } else {
