@@ -30,10 +30,11 @@ class Location implements LocationRewriter {
    * @param  mixed $action      either an instance of Action or action class name. If null, the location will point to the default action as specified in the <tt>action.default</tt> .config option.
    * @param  array $parameters  parameters that will be passed to the action
    */
-  function __construct($action = null, $parameters = array()) {
+  function __construct($action = null, $parameters = array(), $anchor = null) {
     if(is_null($this->action = ($action instanceof Action) ? get_class($action) : $action)) {
       $this->action = Package::getPackageByName('freeform')->getProperty('action.default');
     }
+    $this->anchor = $anchor;
     $this->parameters = $parameters;
   }
   
